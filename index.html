@@ -12,21 +12,18 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="min-h-screen text-white">
-    <!-- Background Canvas -->
     <div class="fixed inset-0 z-0 pointer-events-none bg-[#0a0a0a] overflow-hidden">
         <canvas id="bg-canvas"></canvas>
         <div class="fixed inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_120%)] pointer-events-none"></div>
     </div>
 
-    <!-- Mobile Menu Toggle -->
     <div id="mobile-toggle" class="md:hidden fixed top-4 right-4 z-50 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/20 cursor-pointer">
         <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
         <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
     </div>
 
     <div class="flex flex-col md:flex-row">
-        <!-- SIDEBAR -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-300 md:sticky md:top-0 md:h-screen shrink-0 border-r border-white/5">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-300 md:top-0 md:h-screen shrink-0 border-r border-white/5">
             <div class="h-full flex flex-col p-6 md:p-8 bg-[#0a001a]/80 backdrop-blur-xl border-r border-white/10 relative overflow-hidden">
                 <div id="sidebar-glow" class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--theme-color)] to-transparent"></div>
                 
@@ -97,13 +94,10 @@
             </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 relative z-10 w-full md:w-auto min-w-0">
+        <main class="flex-1 relative z-10 w-full md:w-auto min-w-0 md:ml-72">
             <div class="max-w-6xl mx-auto px-6 py-12 md:py-24 space-y-32">
                 
-                <!-- ABOUT / HERO -->
                 <section id="about" class="min-h-[70vh] flex flex-col justify-center relative">
-                    <!-- Soft dark gradient backdrop for readability -->
                     <div class="absolute -inset-10 bg-gradient-to-r from-black/70 via-black/50 to-transparent rounded-3xl blur-2xl -z-10"></div>
                     <div class="absolute -inset-6 bg-gradient-to-b from-black/60 via-black/40 to-transparent rounded-3xl blur-xl -z-10"></div>
                     
@@ -133,7 +127,6 @@
                     </div>
                 </section>
 
-                <!-- ARCADE -->
                 <section id="games">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
                         <h3 id="games-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
@@ -148,7 +141,6 @@
                     <div id="games-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
                 </section>
 
-                <!-- PORTFOLIO -->
                 <section id="portfolio">
                     <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                         <div class="relative z-10 text-left section-backdrop">
@@ -172,7 +164,6 @@
                     <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
                 </section>
 
-                <!-- EXPERIENCE -->
                 <section id="experience">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
                         <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
@@ -187,7 +178,6 @@
                     <div id="experience-list" class="space-y-12 pl-4 border-l-2 border-white/10 relative ml-2"></div>
                 </section>
                  
-                <!-- EDUCATION -->
                 <section id="education" class="pb-32">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
                         <h3 id="education-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
@@ -201,7 +191,6 @@
                     <div id="education-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                 </section>
 
-                <!-- Footer -->
                 <footer class="text-center text-gray-600 text-xs font-mono py-12 border-t border-white/5 bg-black/50 backdrop-blur-xl">
                     <p>SYSTEM REBOOT COMPLETE.</p>
                     <p class="mt-2">© 2025 Kenan Ege.</p>

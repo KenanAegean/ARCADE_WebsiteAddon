@@ -31,6 +31,7 @@ async function loadData() {
             education: { hex: '#0051ff' }
         };
         
+        // Initial theme default (will be overridden by init scroll check)
         themeColor = themes.about.hex;
         dataLoaded = true;
         
@@ -47,6 +48,8 @@ async function loadData() {
 // ==================== BACKGROUND ANIMATION ====================
 function initBackground() {
     const canvas = document.getElementById('bg-canvas');
+    if (!canvas) return; // Guard clause
+    
     const ctx = canvas.getContext('2d');
     let time = 0;
     
@@ -68,7 +71,6 @@ function initBackground() {
     let gridDots = [];
 
     // 3D Shapes - Game and Coding themed (TRUE 3D with depth)
-    // Random positions each page load + very slow smooth movement
     const shapes = [
         { 
             type: 'controller', 
@@ -690,26 +692,29 @@ function updateFilterStyles() {
 }
 
 // ==================== EVENT LISTENERS ====================
-function initEventListeners() {
-    window.addEventListener('scroll', function() {
-        const sections = ['about', 'games', 'portfolio', 'experience', 'education'];
-        const scrollPosition = window.scrollY + window.innerHeight * 0.3;
+function handleScroll() {
+    const sections = ['about', 'games', 'portfolio', 'experience', 'education'];
+    const scrollPosition = window.scrollY + window.innerHeight * 0.3;
 
-        for (let i = 0; i < sections.length; i++) {
-            const section = sections[i];
-            const el = document.getElementById(section);
-            if (el) {
-                const offsetTop = el.offsetTop;
-                const offsetHeight = el.offsetHeight;
-                if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                    if (currentSection !== section) {
-                        updateTheme(section);
-                    }
-                    break;
-                }
+    for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const el = document.getElementById(section);
+        if (el) {
+            const offsetTop = el.offsetTop;
+            const offsetHeight = el.offsetHeight;
+            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                // FIXED: Removed the check "if (currentSection !== section)" 
+                // to allow the theme to refresh constantly and fix color glitches,
+                // matching the developer's intent in updateTheme comment.
+                updateTheme(section);
+                break;
             }
         }
-    });
+    }
+}
+
+function initEventListeners() {
+    window.addEventListener('scroll', handleScroll);
 
     document.querySelectorAll('.nav-item').forEach(function(item) {
         item.addEventListener('click', function(e) {
@@ -757,9 +762,6 @@ async function init() {
     // Initialize background animation
     initBackground();
     
-    // Set initial theme
-    updateTheme('about');
-    
     // Render all sections
     renderGames();
     renderPortfolio();
@@ -768,6 +770,9 @@ async function init() {
     
     // Initialize event listeners
     initEventListeners();
+
+    // FIXED: Trigger initial scroll check to set correct theme if page is loaded scrolled down
+    handleScroll();
 }
 
 document.addEventListener('DOMContentLoaded', init);
