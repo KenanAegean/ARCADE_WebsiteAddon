@@ -1,3 +1,10 @@
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative; /* Ensures proper stacking context */
+}
+
 body {
     font-family: 'Chakra Petch', sans-serif;
     background: #020005;
