@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenan EGE - Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Chakra+Petch:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Chakra Petch', sans-serif;
+            background: #020005;
+        }
+        .font-archivo { font-family: 'Archivo Black', sans-serif; }
+        .font-mono { font-family: 'Space Mono', monospace; }
+        
+        ::selection {
+            background-color: var(--theme-color, #00f3ff);
+            color: black;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a001a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--theme-color, #00f3ff); }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        /* Animations */
+        @keyframes ping {
+            75%, 100% { transform: scale(2); opacity: 0; }
+        }
+        .animate-ping { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        /* Background canvas */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .bg-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* Nav active states */
+        .nav-item.active { color: white; }
+        .nav-item.active .nav-bg { transform: scaleX(1); }
+        .nav-item.active .nav-icon { color: var(--theme-color); }
+        .nav-item.active .nav-chevron { display: block; }
+        
+        /* Card hover effects */
+        .project-card:hover { transform: scale(1.02); }
+        .project-card:hover .card-border { border-color: var(--theme-color); }
+        .project-card:hover .card-image { transform: scale(1.1); opacity: 1; }
+        .project-card:hover .card-title { color: var(--theme-color); }
+        
+        /* Game card hover */
+        .game-card:hover .game-border { border-color: var(--theme-color); }
+        .game-card:hover .game-bg { opacity: 1; transform: scale(1.05); }
+        
+        /* Education card hover */
+        .edu-card:hover { transform: translateY(-8px); }
+        .edu-card:hover .edu-icon { background-color: var(--theme-color); color: black; }
+        .edu-card:hover .edu-title { color: var(--theme-color); }
+        
+        /* Experience card hover */
+        .exp-card:hover { background: rgba(255,255,255,0.05); }
+        .exp-card:hover .exp-title { color: var(--theme-color); }
+    </style>
+</head>
+<body class="min-h-screen text-white">
+    <!-- Background Canvas -->
+    <div class="fixed inset-0 z-0 pointer-events-none bg-[#0a0a0a] overflow-hidden">
+        <canvas id="bg-canvas"></canvas>
+        <div class="bg-overlay bg-[radial-gradient(circle_at_center,transparent_0%,#000000_120%)]"></div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <div id="mobile-toggle" class="md:hidden fixed top-4 right-4 z-50 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/20 cursor-pointer">
+        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+        <i data-lucide="x" id="close-icon" class="w-6 h-6 hidden"></i>
+    </div>
+
+    <div class="flex flex-col md:flex-row">
+        <!-- SIDEBAR -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-300 md:sticky md:top-0 md:h-screen shrink-0 border-r border-white/5">
+            <div class="h-full flex flex-col p-6 md:p-8 bg-[#0a001a]/80 backdrop-blur-xl border-r border-white/10 relative overflow-hidden">
+                <!-- Top glow -->
+                <div id="sidebar-glow" class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--theme-color)] to-transparent"></div>
+                
+                <!-- Avatar & Name -->
+                <div class="flex flex-col items-center text-center mb-12 relative z-10 mt-4">
+                    <div id="avatar-ring" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 p-1 mb-4 relative group cursor-pointer overflow-hidden bg-black transition-colors duration-700 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                        <img src="./assets/images/avatar4.gif" alt="Avatar" class="w-full h-full rounded-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
+                        <div class="absolute inset-0 flex items-center justify-center text-2xl font-black opacity-0 group-hover:opacity-100 transition-opacity bg-black/80" style="color: var(--theme-color)">KE</div>
+                    </div>
+                    
+                    <h1 class="text-3xl font-black font-archivo text-white mb-2 tracking-tighter uppercase drop-shadow-md">Kenan EGE</h1>
+                    <div class="flex flex-wrap justify-center gap-2 mb-4">
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10">Computer Engineer</span>
+                        <span class="text-[9px] font-mono px-2 py-0.5 rounded bg-white/5 text-gray-400 border border-white/10">Game Developer</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 text-xs text-gray-400 font-mono">
+                        <i data-lucide="map-pin" class="w-3 h-3" style="color: var(--theme-color)"></i> Warsaw, PL
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex-grow flex flex-col gap-2 relative z-10">
+                    <a href="#about" class="nav-item active flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="about">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="terminal" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">Overview</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
+                    <a href="#games" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="games">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="gamepad-2" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">Arcade</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
+                    <a href="#portfolio" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="portfolio">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="layers" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">Inventory</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
+                    <a href="#experience" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="experience">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="briefcase" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">Log</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
+                    <a href="#education" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="education">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="graduation-cap" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">Stats</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
+                </nav>
+
+                <!-- Social Links -->
+                <div class="mt-auto pt-6 border-t border-white/5 flex justify-center gap-4 relative z-10">
+                    <a href="https://github.com/KenanAegean" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Github">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="LinkedIn">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.instagram.com/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Instagram">
+                        <i data-lucide="instagram" class="w-5 h-5"></i>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCds6Gb5gvdc6_zyXa8u5e0w" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="YouTube">
+                        <i data-lucide="youtube" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 relative z-10 w-full md:w-auto min-w-0">
+            <div class="max-w-6xl mx-auto px-6 py-12 md:py-24 space-y-32">
+                
+                <!-- ABOUT / HERO -->
+                <section id="about" class="min-h-[70vh] flex flex-col justify-center">
+                    <div id="status-badge" class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border bg-black/40 backdrop-blur-md mb-8 w-fit transition-colors duration-700 shadow-lg">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color: var(--theme-color)"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2" style="background-color: var(--theme-color)"></span>
+                        </span>
+                        <span class="text-[10px] font-mono uppercase tracking-widest font-bold text-white">System Online</span>
+                    </div>
+                    
+                    <h1 class="text-6xl md:text-9xl font-black text-white mb-6 font-archivo leading-[0.85] tracking-tighter drop-shadow-2xl">
+                        LEVEL <span id="hero-accent" class="text-transparent bg-clip-text">UP</span> <br/> REALITY
+                    </h1>
+                    
+                    <p class="text-xl md:text-2xl text-gray-300 max-w-2xl leading-relaxed mb-10 drop-shadow-md">
+                        I'm a computer engineer and game developer currently based in Warsaw. I have a passion for building strange worlds and the sturdy code that supports them. Whether it's a reliable backend system or a game mechanic that lets you play as a destructive cat, I love the process of creation.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#portfolio" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                            View Projects
+                        </a>
+                        <a href="#games" class="px-8 py-4 border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded hover:bg-white/10 hover:border-white transition-colors backdrop-blur-sm">
+                            Play Games
+                        </a>
+                    </div>
+                </section>
+
+                <!-- ARCADE -->
+                <section id="games">
+                    <div class="mb-12 relative z-10 text-left">
+                        <h3 id="games-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700">
+                            <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                            Playable Demos
+                        </h3>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block drop-shadow-2xl font-archivo">
+                            Arcade
+                        </h2>
+                    </div>
+                    
+                    <div id="games-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Games will be injected here -->
+                    </div>
+                </section>
+
+                <!-- PORTFOLIO -->
+                <section id="portfolio">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                        <div class="relative z-10 text-left">
+                            <h3 id="portfolio-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700">
+                                <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                                Projects
+                            </h3>
+                            <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block drop-shadow-2xl font-archivo">
+                                Inventory
+                            </h2>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div id="filters" class="flex flex-wrap gap-2">
+                            <button class="filter-btn active px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm" data-filter="all">All</button>
+                            <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="game">Games</button>
+                            <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="web">Web</button>
+                            <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="app">Apps</button>
+                        </div>
+                    </div>
+
+                    <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Projects will be injected here -->
+                    </div>
+                </section>
+
+                <!-- EXPERIENCE -->
+                <section id="experience">
+                    <div class="mb-12 relative z-10 text-left">
+                        <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700">
+                            <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                            History
+                        </h3>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block drop-shadow-2xl font-archivo">
+                            Career Log
+                        </h2>
+                    </div>
+                    
+                    <div id="experience-list" class="space-y-12 pl-4 border-l-2 border-white/10 relative ml-2">
+                        <!-- Experience will be injected here -->
+                    </div>
+                </section>
+                 
+                <!-- EDUCATION -->
+                <section id="education" class="pb-32">
+                    <div class="mb-12 relative z-10 text-left">
+                        <h3 id="education-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700">
+                            <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                            Education
+                        </h3>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block drop-shadow-2xl font-archivo">
+                            Stats
+                        </h2>
+                    </div>
+                    <div id="education-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Education will be injected here -->
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="text-center text-gray-600 text-xs font-mono py-12 border-t border-white/5 bg-black/50 backdrop-blur-xl">
+                    <p>SYSTEM REBOOT COMPLETE.</p>
+                    <p class="mt-2">© 2025 Kenan Ege.</p>
+                </footer>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        const portfolioItems = [
+            { id: 1, title: "Echolocation Mechanic", category: "game development", description: "UE5 visual echolocation system with custom shader effects.", highlighted: true, image: "./assets/images/Portfolio/gifs/echo.gif", link: "https://github.com/KenanAegean/Echolocation-System", tags: ["UE 5", "Gameplay Mechanic"], iconType: "unreal" },
+            { id: 3, title: "Echoes Of Stella", category: "game development", description: "Narrative horror game exploring isolation and memory.", highlighted: true, image: "./assets/images/Portfolio/gifs/eos.gif", link: "https://kenanege.itch.io/echoes-of-stella", tags: ["UE 5", "Group Project"], iconType: "unreal" },
+            { id: 2, title: "Killwats League", category: "game development", description: "Fast-paced 1v1 sports game with dynamic cameras.", highlighted: true, image: "./assets/images/Portfolio/gifs/kw.gif", link: "https://kenanege.itch.io/killwats-league", tags: ["UE 5", "Group Project"], iconType: "unreal" },
+            { id: 4, title: "Dark Descent", category: "game development", description: "Action-roguelite with spell-based combat.", highlighted: true, image: "./assets/images/Portfolio/gifs/dd.gif", link: "https://kenanege.itch.io/dark-descent", tags: ["Unity", "Group Project"], iconType: "unity" },
+            { id: 5, title: "In A Bad Mewd", category: "game development", description: "Chaotic destruction platformer as a mischievous cat.", highlighted: true, image: "./assets/images/Portfolio/gifs/mewd.gif", link: "https://kenanege.itch.io/in-a-bad-mewd-webgltest", tags: ["Unity", "Group Project"], iconType: "unity" },
+            { id: 7, title: "Swarmbreaker", category: "game development", description: "Arcade survivor game with orbital combat.", highlighted: true, image: "./assets/images/Portfolio/gifs/sboop2.gif", link: "https://kenanege.itch.io/swarmbreaker", tags: ["Unity", "Solo Project"], iconType: "unity" },
+            { id: 9, title: "Riziko", category: "game development", description: "Digital board/card game adaptation with roguelike mechanics.", highlighted: true, image: "./assets/images/Portfolio/gifs/riziko.gif", link: "https://kenanaegean.github.io/Riziko_WebGL/", tags: ["Unity", "Solo Project"], iconType: "unity" },
+            { id: 21, title: "GamerLog", category: "web application", description: "Django platform for tracking game collections with AI.", highlighted: true, image: "./assets/images/Portfolio/gamerlog.png", link: "#", tags: ["Django"], iconType: "django" },
+            { id: 23, title: "Personal Website", category: "web application", description: "JSON-driven portfolio site with automated CI/CD.", highlighted: true, image: "./assets/images/Portfolio/website.png", link: "https://github.com/KenanAegean/KenanAegean.github.io", tags: ["HTML/JS"], iconType: "web" },
+            { id: 27, title: "Steam Screenshot Tool", category: "windows application", description: "Python automation for organizing Steam screenshots.", highlighted: false, image: "./assets/images/Portfolio/steam.png", link: "https://github.com/KenanAegean/Steam-Screenshot-Tool", tags: ["Python"], iconType: "python" },
+            { id: 14, title: "CRT TV Shader", category: "game development", description: "Custom shader recreating authentic retro CRT monitor visual effects.", highlighted: true, image: "./assets/images/Portfolio/gifs/shader1.gif", link: "https://github.com/KenanAegean/FG-Shader", tags: ["Unity", "Shader"], iconType: "unity" },
+            { id: 30, title: "Scientific Calculator", category: "windows application", description: "Functional scientific calculator desktop application in C#.", highlighted: false, image: "./assets/images/Portfolio/calc.png", link: "https://github.com/KenanAegean/Calculator-WindowsForm", tags: ["C#"], iconType: "csharp" },
+            { id: 33, title: "Euro 2022 Stadiums", category: "mobile application", description: "Android app with stadium guides and locations for Euro 2022.", highlighted: false, image: "./assets/images/Portfolio/stadium.png", link: "https://github.com/KenanAegean/World-Cup-2022-Stadiums-App-Android-Studio", tags: ["Android"], iconType: "android" }
+        ];
+
+        const experience = [
+            {
+                id: 1, company: "Orion Innovation", url: "https://www.orioninc.com/",
+                positions: [
+                    { title: "Software Engineer", date: "Mar 2023 - Sept 2024", desc: "Resolved critical bugs in Java apps, deployed Docker containers, and built an AI-based NBA match prediction app using Django." },
+                    { title: "Software Engineer - Intern", date: "Aug 2022 - Oct 2022", desc: "Developed a Java Spring Boot web app for test-environment reservations." }
+                ]
+            },
+            {
+                id: 2, company: "BDH - NETAŞ", url: "https://www.bdh.com.tr/",
+                positions: [
+                    { title: "Software Engineer - Intern", date: "Aug 2021 - Sept 2021", desc: "Explored Salesforce Cloud Platform, Apex programming, and CRM solutions." }
+                ]
+            },
+            {
+                id: 3, company: "Biltek Design", url: "https://www.biltek.com.tr/",
+                positions: [
+                    { title: "Volunteer Intern", date: "Sept 2018 - Nov 2019", desc: "Learned web development (PHP, MySQL) and assisted in full-stack projects." }
+                ]
+            }
+        ];
+
+        const education = [
+            { id: 1, school: "Futuregames Academy", degree: "Game Programming", date: "2024 - Present" },
+            { id: 2, school: "University Of Lodz", degree: "Math & CS (Erasmus)", date: "2022" },
+            { id: 3, school: "Doğuş University", degree: "Computer Engineering", date: "2018 - 2023" }
+        ];
+
+        const gamesShowcase = [
+            { id: 1, title: "Swarmbreaker", link: "https://kenanege.itch.io/swarmbreaker", image: "./assets/images/PlayableGames/playable_swoop.png" },
+            { id: 2, title: "Killwats League", link: "https://kenanege.itch.io/killwats-league", image: "./assets/images/PlayableGames/playable_kw.png" },
+            { id: 3, title: "Echoes Of Stella", link: "https://kenanege.itch.io/echoes-of-stella", image: "./assets/images/PlayableGames/playable_eos4.png" },
+            { id: 4, title: "Dark Descent", link: "https://kenanege.itch.io/dark-descent", image: "./assets/images/PlayableGames/playable_ddph2.png" },
+            { id: 5, title: "In A Bad Mewd", link: "https://kenanege.itch.io/in-a-bad-mewd-webgltest", image: "./assets/images/PlayableGames/playable_mewd.png" }
+        ];
+
+        // ==================== THEMES ====================
+        const themes = {
+            about: { hex: '#00f3ff' },
+            games: { hex: '#ff0055' },
+            portfolio: { hex: '#bc13fe' },
+            experience: { hex: '#ffd700' },
+            education: { hex: '#0051ff' }
+        };
+
+        let currentSection = 'about';
+        let currentFilter = 'all';
+        let themeColor = themes.about.hex;
+
+        // ==================== BACKGROUND ANIMATION ====================
+        function initBackground() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let time = 0;
+
+            const resize = () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            };
+            window.addEventListener('resize', resize);
+            resize();
+
+            const shapes = [
+                { type: 'cube', x: 0.15, y: 0.3, z: 0, scale: 120, rx: 0, ry: 0, speedX: 0.005, speedY: 0.003 },
+                { type: 'octa', x: 0.85, y: 0.7, z: 0, scale: 100, rx: 0, ry: 0, speedX: -0.004, speedY: 0.006 },
+                { type: 'tetra', x: 0.6, y: 0.2, z: 0, scale: 80, rx: 0, ry: 0, speedX: 0.003, speedY: -0.002 },
+            ];
+
+            const cubeVerts = [{x:-1,y:-1,z:-1},{x:1,y:-1,z:-1},{x:1,y:1,z:-1},{x:-1,y:1,z:-1},{x:-1,y:-1,z:1},{x:1,y:-1,z:1},{x:1,y:1,z:1},{x:-1,y:1,z:1}];
+            const cubeEdges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            const octaVerts = [{x:0,y:1,z:0},{x:0,y:-1,z:0},{x:1,y:0,z:0},{x:-1,y:0,z:0},{x:0,y:0,z:1},{x:0,y:0,z:-1}];
+            const octaEdges = [[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[4,3],[3,5],[5,2]];
+            const tetraVerts = [{x:1,y:1,z:1},{x:-1,y:-1,z:1},{x:-1,y:1,z:-1},{x:1,y:-1,z:-1}];
+            const tetraEdges = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+
+            const drawLine3D = (v1, v2, center, w, h) => {
+                const rotate = (p, rx, ry) => {
+                    let x = p.x * Math.cos(ry) - p.z * Math.sin(ry);
+                    let z = p.x * Math.sin(ry) + p.z * Math.cos(ry);
+                    let y = p.y * Math.cos(rx) - z * Math.sin(rx);
+                    z = p.y * Math.sin(rx) + z * Math.cos(rx);
+                    return { x, y, z };
+                };
+                const r1 = rotate(v1, center.rx, center.ry);
+                const r2 = rotate(v2, center.rx, center.ry);
+                r1.x *= center.scale; r1.y *= center.scale; r1.z *= center.scale;
+                r2.x *= center.scale; r2.y *= center.scale; r2.z *= center.scale;
+                const fov = 500;
+                const scale1 = fov / (fov + r1.z + 500);
+                const scale2 = fov / (fov + r2.z + 500);
+                const x2d1 = (w * center.x) + r1.x * scale1;
+                const y2d1 = (h * center.y) + r1.y * scale1;
+                const x2d2 = (w * center.x) + r2.x * scale2;
+                const y2d2 = (h * center.y) + r2.y * scale2;
+                ctx.moveTo(x2d1, y2d1);
+                ctx.lineTo(x2d2, y2d2);
+            };
+
+            const animate = () => {
+                time += 0.01;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const w = canvas.width;
+                const h = canvas.height;
+
+                // Flowing lines
+                ctx.lineWidth = 1;
+                const lineSpacing = 30;
+                const lineCount = Math.ceil(h / lineSpacing);
+                
+                for(let i = 0; i < lineCount; i++) {
+                    const y = i * lineSpacing;
+                    const shimmer = Math.sin(y * 0.02 + time * 2); 
+                    const opacity = 0.05 + 0.15 * ((shimmer + 1) / 2);
+                    ctx.strokeStyle = themeColor;
+                    ctx.globalAlpha = opacity;
+                    ctx.beginPath();
+                    ctx.setLineDash([50, 150]);
+                    ctx.lineDashOffset = -time * 100;
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(w, y);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+
+                // 3D Shapes
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = themeColor;
+                ctx.strokeStyle = themeColor;
+                ctx.globalAlpha = 0.4;
+                ctx.lineWidth = 2;
+
+                shapes.forEach(shape => {
+                    shape.rx += shape.speedX;
+                    shape.ry += shape.speedY;
+                    ctx.beginPath();
+                    let verts = [], edges = [];
+                    if(shape.type === 'cube') { verts = cubeVerts; edges = cubeEdges; }
+                    else if(shape.type === 'octa') { verts = octaVerts; edges = octaEdges; }
+                    else { verts = tetraVerts; edges = tetraEdges; }
+                    edges.forEach(edge => drawLine3D(verts[edge[0]], verts[edge[1]], shape, w, h));
+                    ctx.stroke();
+                });
+                ctx.globalAlpha = 1;
+                ctx.shadowBlur = 0;
+
+                requestAnimationFrame(animate);
+            };
+            animate();
+        }
+
+        // ==================== THEME UPDATE ====================
+        function updateTheme(section) {
+            currentSection = section;
+            themeColor = themes[section]?.hex || themes.about.hex;
+            document.documentElement.style.setProperty('--theme-color', themeColor);
+
+            // Update nav
+            document.querySelectorAll('.nav-item').forEach(item => {
+                const isActive = item.dataset.section === section;
+                item.classList.toggle('active', isActive);
+                if (isActive) {
+                    item.classList.add('text-white');
+                    item.classList.remove('text-gray-500');
+                } else {
+                    item.classList.remove('text-white');
+                    item.classList.add('text-gray-500');
+                }
+            });
+
+            // Update various elements
+            document.getElementById('avatar-ring').style.borderColor = themeColor;
+            document.getElementById('avatar-ring').style.boxShadow = `0 0 20px ${themeColor}40`;
+            document.getElementById('status-badge').style.borderColor = `${themeColor}60`;
+            document.getElementById('status-badge').style.boxShadow = `0 0 15px ${themeColor}20`;
+            
+            const heroAccent = document.getElementById('hero-accent');
+            heroAccent.style.backgroundImage = `linear-gradient(to right, white, ${themeColor})`;
+            heroAccent.style.filter = `drop-shadow(0 0 10px ${themeColor})`;
+            
+            document.getElementById('cta-primary').style.backgroundColor = themeColor;
+            document.getElementById('cta-primary').style.boxShadow = `0 0 30px ${themeColor}60`;
+
+            // Update subtitles
+            ['games', 'portfolio', 'experience', 'education'].forEach(s => {
+                const el = document.getElementById(`${s}-subtitle`);
+                if (el) {
+                    el.style.color = themeColor;
+                    el.style.textShadow = `0 0 10px ${themeColor}`;
+                }
+            });
+
+            // Update active filter
+            updateFilterStyles();
+        }
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderGames() {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = gamesShowcase.map((game, idx) => `
+                <a href="${game.link}" target="_blank" class="game-card group relative ${idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video'} bg-black/60 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                    <div class="game-border absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-xl z-20 pointer-events-none"></div>
+                    <div class="game-bg absolute inset-0 bg-cover bg-center opacity-60 transition-all duration-700" style="background-image: url(${game.image})"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+                    <div class="absolute bottom-0 left-0 p-6 z-10">
+                        <h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-lg">${game.title}</h3>
+                        <div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color)">
+                            <i data-lucide="gamepad-2" class="w-4 h-4"></i> Click to Play
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderPortfolio(filter = 'all') {
+            let items = portfolioItems;
+            if (filter === 'game') items = items.filter(i => i.category.includes('game'));
+            else if (filter === 'web') items = items.filter(i => i.category.includes('web'));
+            else if (filter === 'app') items = items.filter(i => i.category.includes('windows') || i.category.includes('mobile'));
+
+            const grid = document.getElementById('portfolio-grid');
+            grid.innerHTML = items.map(item => `
+                <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="project-card group relative block bg-[#13111c]/80 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">
+                    <div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>
+                    <div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">
+                        <img src="${item.image}" alt="${item.title}" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">
+                            <i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>
+                        </div>
+                        <div class="absolute top-2 right-2 flex flex-col items-end gap-1">
+                            ${item.tags.slice(0, 2).map(tag => `<span class="px-2 py-1 text-[8px] uppercase font-bold bg-black/80 text-white border border-white/10 shadow-[0_0_10px_black] backdrop-blur-sm">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="p-5 flex-grow flex flex-col relative z-10">
+                        <h4 class="card-title text-lg font-bold text-white mb-2 leading-tight transition-colors">${item.title}</h4>
+                        <p class="text-gray-400 text-xs mb-4 line-clamp-2 flex-grow font-mono leading-relaxed group-hover:text-gray-300">${item.description}</p>
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 font-bold text-[10px] uppercase tracking-wider transition-colors duration-300" style="color: var(--theme-color)">
+                            <span class="flex items-center gap-2">
+                                <i data-lucide="${item.iconType === 'unreal' || item.iconType === 'unity' ? 'gamepad-2' : 'code'}" class="w-3 h-3"></i>
+                                ${item.category}
+                            </span>
+                            <i data-lucide="external-link" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function renderExperience() {
+            const list = document.getElementById('experience-list');
+            list.innerHTML = experience.map(job => `
+                <div class="relative pl-8 group">
+                    <div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>
+                    <h3 class="text-3xl font-bold text-white mb-1">${job.company}</h3>
+                    <a href="${job.url}" target="_blank" class="text-xs font-mono hover:underline mb-6 block w-fit" style="color: var(--theme-color)">Visit Company Website →</a>
+                    <div class="space-y-6">
+                        ${job.positions.map(pos => `
+                            <div class="exp-card bg-black/40 p-8 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden">
+                                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4">
+                                    <h4 class="exp-title text-xl font-bold text-white transition-colors">${pos.title}</h4>
+                                    <span class="text-xs font-mono text-gray-400 bg-black/50 px-3 py-1 rounded border border-white/10">${pos.date}</span>
+                                </div>
+                                <p class="text-sm text-gray-300 leading-relaxed max-w-3xl">${pos.desc}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEducation() {
+            const grid = document.getElementById('education-grid');
+            grid.innerHTML = education.map(edu => `
+                <div class="edu-card group p-8 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300">
+                    <div class="edu-icon mb-6 transition-colors duration-300 p-3 bg-white/5 w-fit rounded-lg" style="color: var(--theme-color)">
+                        <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+                    </div>
+                    <div class="text-xs font-bold uppercase text-gray-500 mb-2">${edu.date}</div>
+                    <h4 class="edu-title text-xl font-bold text-white leading-tight mb-2 transition-colors">${edu.degree}</h4>
+                    <div class="text-sm text-gray-400 font-mono">${edu.school}</div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function updateFilterStyles() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const isActive = btn.dataset.filter === currentFilter;
+                if (isActive) {
+                    btn.style.backgroundColor = themeColor;
+                    btn.style.borderColor = themeColor;
+                    btn.style.color = 'black';
+                    btn.classList.add('shadow-[0_0_15px_currentColor]');
+                } else {
+                    btn.style.backgroundColor = 'transparent';
+                    btn.style.borderColor = 'rgba(255,255,255,0.2)';
+                    btn.style.color = '#9ca3af';
+                    btn.classList.remove('shadow-[0_0_15px_currentColor]');
+                }
+            });
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        function initEventListeners() {
+            // Scroll spy
+            window.addEventListener('scroll', () => {
+                const sections = ['about', 'games', 'portfolio', 'experience', 'education'];
+                const scrollPosition = window.scrollY + window.innerHeight * 0.3;
+
+                for (const section of sections) {
+                    const el = document.getElementById(section);
+                    if (el) {
+                        const { offsetTop, offsetHeight } = el;
+                        if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                            if (currentSection !== section) {
+                                updateTheme(section);
+                            }
+                            break;
+                        }
+                    }
+                }
+            });
+
+            // Nav clicks
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = item.dataset.section;
+                    document.getElementById(section)?.scrollIntoView({ behavior: 'smooth' });
+                    // Close mobile menu
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                    document.getElementById('menu-icon').classList.remove('hidden');
+                    document.getElementById('close-icon').classList.add('hidden');
+                });
+            });
+
+            // Mobile menu
+            document.getElementById('mobile-toggle').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const isOpen = !sidebar.classList.contains('-translate-x-full');
+                sidebar.classList.toggle('-translate-x-full', isOpen);
+                document.getElementById('menu-icon').classList.toggle('hidden', !isOpen);
+                document.getElementById('close-icon').classList.toggle('hidden', isOpen);
+            });
+
+            // Filters
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentFilter = btn.dataset.filter;
+                    updateFilterStyles();
+                    renderPortfolio(currentFilter);
+                });
+            });
+        }
+
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initBackground();
+            updateTheme('about');
+            renderGames();
+            renderPortfolio();
+            renderExperience();
+            renderEducation();
+            initEventListeners();
+        });
+    </script>
+</body>
+</html>
