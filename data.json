@@ -1,0 +1,249 @@
+{
+    "themes": {
+        "about": { "hex": "#00f3ff" },
+        "games": { "hex": "#ff0055" },
+        "portfolio": { "hex": "#bc13fe" },
+        "experience": { "hex": "#ffd700" },
+        "education": { "hex": "#0051ff" }
+    },
+    "portfolioItems": [
+        {
+            "id": 1,
+            "title": "Echolocation Mechanic",
+            "category": "game development",
+            "description": "UE5 visual echolocation system with custom shader effects.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/echo.gif",
+            "link": "https://github.com/KenanAegean/Echolocation-System",
+            "tags": ["UE 5", "Gameplay Mechanic"],
+            "iconType": "unreal"
+        },
+        {
+            "id": 3,
+            "title": "Echoes Of Stella",
+            "category": "game development",
+            "description": "Narrative horror game exploring isolation and memory.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/eos.gif",
+            "link": "https://kenanege.itch.io/echoes-of-stella",
+            "tags": ["UE 5", "Group Project"],
+            "iconType": "unreal"
+        },
+        {
+            "id": 2,
+            "title": "Killwats League",
+            "category": "game development",
+            "description": "Fast-paced 1v1 sports game with dynamic cameras.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/kw.gif",
+            "link": "https://kenanege.itch.io/killwats-league",
+            "tags": ["UE 5", "Group Project"],
+            "iconType": "unreal"
+        },
+        {
+            "id": 4,
+            "title": "Dark Descent",
+            "category": "game development",
+            "description": "Action-roguelite with spell-based combat.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/dd.gif",
+            "link": "https://kenanege.itch.io/dark-descent",
+            "tags": ["Unity", "Group Project"],
+            "iconType": "unity"
+        },
+        {
+            "id": 5,
+            "title": "In A Bad Mewd",
+            "category": "game development",
+            "description": "Chaotic destruction platformer as a mischievous cat.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/mewd.gif",
+            "link": "https://kenanege.itch.io/in-a-bad-mewd-webgltest",
+            "tags": ["Unity", "Group Project"],
+            "iconType": "unity"
+        },
+        {
+            "id": 7,
+            "title": "Swarmbreaker",
+            "category": "game development",
+            "description": "Arcade survivor game with orbital combat.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/sboop2.gif",
+            "link": "https://kenanege.itch.io/swarmbreaker",
+            "tags": ["Unity", "Solo Project"],
+            "iconType": "unity"
+        },
+        {
+            "id": 9,
+            "title": "Riziko",
+            "category": "game development",
+            "description": "Digital board/card game adaptation with roguelike mechanics.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/riziko.gif",
+            "link": "https://kenanaegean.github.io/Riziko_WebGL/",
+            "tags": ["Unity", "Solo Project"],
+            "iconType": "unity"
+        },
+        {
+            "id": 21,
+            "title": "GamerLog",
+            "category": "web application",
+            "description": "Django platform for tracking game collections with AI.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gamerlog.png",
+            "link": "#",
+            "tags": ["Django"],
+            "iconType": "django"
+        },
+        {
+            "id": 23,
+            "title": "Personal Website",
+            "category": "web application",
+            "description": "JSON-driven portfolio site with automated CI/CD.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/website.png",
+            "link": "https://github.com/KenanAegean/KenanAegean.github.io",
+            "tags": ["HTML/JS"],
+            "iconType": "web"
+        },
+        {
+            "id": 27,
+            "title": "Steam Screenshot Tool",
+            "category": "windows application",
+            "description": "Python automation for organizing Steam screenshots.",
+            "highlighted": false,
+            "image": "./assets/images/Portfolio/steam.png",
+            "link": "https://github.com/KenanAegean/Steam-Screenshot-Tool",
+            "tags": ["Python"],
+            "iconType": "python"
+        },
+        {
+            "id": 14,
+            "title": "CRT TV Shader",
+            "category": "game development",
+            "description": "Custom shader recreating authentic retro CRT monitor visual effects.",
+            "highlighted": true,
+            "image": "./assets/images/Portfolio/gifs/shader1.gif",
+            "link": "https://github.com/KenanAegean/FG-Shader",
+            "tags": ["Unity", "Shader"],
+            "iconType": "unity"
+        },
+        {
+            "id": 30,
+            "title": "Scientific Calculator",
+            "category": "windows application",
+            "description": "Functional scientific calculator desktop application in C#.",
+            "highlighted": false,
+            "image": "./assets/images/Portfolio/calc.png",
+            "link": "https://github.com/KenanAegean/Calculator-WindowsForm",
+            "tags": ["C#"],
+            "iconType": "csharp"
+        },
+        {
+            "id": 33,
+            "title": "Euro 2022 Stadiums",
+            "category": "mobile application",
+            "description": "Android app with stadium guides and locations for Euro 2022.",
+            "highlighted": false,
+            "image": "./assets/images/Portfolio/stadium.png",
+            "link": "https://github.com/KenanAegean/World-Cup-2022-Stadiums-App-Android-Studio",
+            "tags": ["Android"],
+            "iconType": "android"
+        }
+    ],
+    "experience": [
+        {
+            "id": 1,
+            "company": "Orion Innovation",
+            "url": "https://www.orioninc.com/",
+            "positions": [
+                {
+                    "title": "Software Engineer",
+                    "date": "Mar 2023 - Sept 2024",
+                    "desc": "Resolved critical bugs in Java apps, deployed Docker containers, and built an AI-based NBA match prediction app using Django."
+                },
+                {
+                    "title": "Software Engineer - Intern",
+                    "date": "Aug 2022 - Oct 2022",
+                    "desc": "Developed a Java Spring Boot web app for test-environment reservations."
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "company": "BDH - NETAŞ",
+            "url": "https://www.bdh.com.tr/",
+            "positions": [
+                {
+                    "title": "Software Engineer - Intern",
+                    "date": "Aug 2021 - Sept 2021",
+                    "desc": "Explored Salesforce Cloud Platform, Apex programming, and CRM solutions."
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "company": "Biltek Design",
+            "url": "https://www.biltek.com.tr/",
+            "positions": [
+                {
+                    "title": "Volunteer Intern",
+                    "date": "Sept 2018 - Nov 2019",
+                    "desc": "Learned web development (PHP, MySQL) and assisted in full-stack projects."
+                }
+            ]
+        }
+    ],
+    "education": [
+        {
+            "id": 1,
+            "school": "Futuregames Academy",
+            "degree": "Game Programming",
+            "date": "2024 - Present"
+        },
+        {
+            "id": 2,
+            "school": "University Of Lodz",
+            "degree": "Math & CS (Erasmus)",
+            "date": "2022"
+        },
+        {
+            "id": 3,
+            "school": "Doğuş University",
+            "degree": "Computer Engineering",
+            "date": "2018 - 2023"
+        }
+    ],
+    "gamesShowcase": [
+        {
+            "id": 1,
+            "title": "Swarmbreaker",
+            "link": "https://kenanege.itch.io/swarmbreaker",
+            "image": "./assets/images/PlayableGames/playable_swoop.png"
+        },
+        {
+            "id": 2,
+            "title": "Killwats League",
+            "link": "https://kenanege.itch.io/killwats-league",
+            "image": "./assets/images/PlayableGames/playable_kw.png"
+        },
+        {
+            "id": 3,
+            "title": "Echoes Of Stella",
+            "link": "https://kenanege.itch.io/echoes-of-stella",
+            "image": "./assets/images/PlayableGames/playable_eos4.png"
+        },
+        {
+            "id": 4,
+            "title": "Dark Descent",
+            "link": "https://kenanege.itch.io/dark-descent",
+            "image": "./assets/images/PlayableGames/playable_ddph2.png"
+        },
+        {
+            "id": 5,
+            "title": "In A Bad Mewd",
+            "link": "https://kenanege.itch.io/in-a-bad-mewd-webgltest",
+            "image": "./assets/images/PlayableGames/playable_mewd.png"
+        }
+    ]
+}
