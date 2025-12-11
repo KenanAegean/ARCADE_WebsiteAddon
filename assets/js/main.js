@@ -728,7 +728,7 @@ function renderEducation() {
         }
 
         const logoHtml = edu.logo
-            ? `<img src="${edu.logo}" loading="lazy" alt="${edu.institution} logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">`
+            ? `<img src="${edu.logo}" loading="lazy" alt="${edu.institution} logo" class="w-10 h-10 object-contain">`
             : `<i data-lucide="graduation-cap" class="w-8 h-8"></i>`;
 
         const clickableClass = edu.url ? 'cursor-pointer hover:scale-[1.02]' : '';
