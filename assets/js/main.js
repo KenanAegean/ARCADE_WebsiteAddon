@@ -616,7 +616,7 @@ function renderExperience() {
                 responsibilitiesHtml += `</ul>`;
             }
 
-            positionsHtml += `<div class="exp-card bg-black/40 p-6 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden mb-4">
+            positionsHtml += `<div class="exp-card bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 transition-all duration-300 relative overflow-hidden mb-4">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3">
                     <h4 class="exp-title text-xl font-bold text-white transition-colors">${pos.title}</h4>
                     <span class="text-xs font-mono text-gray-400 bg-black/50 px-3 py-1 rounded border border-white/10 mt-2 md:mt-0">${pos.startDate} — ${pos.endDate}</span>
@@ -625,8 +625,9 @@ function renderExperience() {
             </div>`;
         });
 
+        // UPDATED LOGO HTML: Added glass effect (bg-black/40, backdrop-blur, border) to the container
         const logoHtml = (job.logo && job.url)
-            ? `<a href="${job.url}" target="_blank" class="shrink-0"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 rounded-lg bg-white/10 p-1 object-contain hover:scale-110 transition-transform"></a>`
+            ? `<a href="${job.url}" target="_blank" class="shrink-0 p-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl hover:scale-105 transition-transform"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 object-contain"></a>`
             : '';
 
         html += `<div class="relative pl-8 group">
@@ -772,8 +773,7 @@ function updateTheme(section) {
 function updateDynamicColors() {
     const elementsToColor = [
         { selector: '#status-badge', property: 'borderColor', value: themeColor + '60' },
-        // #hero-accent handles color here, shadow handled below
-        { selector: '#hero-accent', property: 'color', value: themeColor }, 
+        { selector: '#hero-accent', property: 'color', value: themeColor },
         { selector: '#avatar-ring', property: 'borderColor', value: themeColor },
         { selector: '#cta-primary', property: 'backgroundColor', value: themeColor },
         { selector: '[data-lucide="map-pin"]', property: 'color', value: themeColor },
@@ -785,10 +785,11 @@ function updateDynamicColors() {
         if (domEl) domEl.style[el.property] = el.value;
     });
 
-    // FIX: Apply Glow Effect (Text Shadow) separately
+    // FIX: Apply Reduced Glow Effect (Text Shadow)
     const heroAccent = document.getElementById('hero-accent');
     if (heroAccent) {
-        heroAccent.style.textShadow = `0 0 30px ${themeColor}, 0 0 60px ${themeColor}`;
+        // Reduced from 30px/60px to 15px/30px for a subtler effect
+        heroAccent.style.textShadow = `0 0 15px ${themeColor}, 0 0 30px ${themeColor}`;
     }
     
     // Icon colors in Nav
