@@ -639,7 +639,7 @@ function renderPortfolio(filter) {
         html += `<a href="${item.link}" ${targetAttr} class="project-card group relative block bg-[#050505]/90 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">
             <div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>
             <div class="aspect-video w-full bg-[#050505] relative overflow-hidden border-b border-white/5">
-                <img src="${item.image}" alt="${item.title}" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <img src="${item.image}" loading="lazy" alt="${item.title}" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                 <div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">
                     <i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>
                 </div>
@@ -692,7 +692,7 @@ function renderExperience() {
 
         // Reduced Shadow on dot
         const logoHtml = (job.logo && job.url)
-            ? `<a href="${job.url}" target="_blank" class="shrink-0 p-2 bg-black/70 backdrop-blur-md border border-white/10 rounded-xl hover:scale-105 transition-transform"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 object-contain"></a>`
+            ? `<a href="${job.url}" target="_blank" class="shrink-0 p-2 bg-black/70 backdrop-blur-md border border-white/10 rounded-xl hover:scale-105 transition-transform"><img src="${job.logo}" loading="lazy" alt="${job.company} logo" class="w-12 h-12 object-contain"></a>`
             : '';
 
         html += `<div class="relative pl-8 group">
@@ -728,7 +728,7 @@ function renderEducation() {
         }
 
         const logoHtml = edu.logo
-            ? `<img src="${edu.logo}" alt="${edu.institution} logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">`
+            ? `<img src="${edu.logo}" loading="lazy" alt="${edu.institution} logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">`
             : `<i data-lucide="graduation-cap" class="w-8 h-8"></i>`;
 
         const clickableClass = edu.url ? 'cursor-pointer hover:scale-[1.02]' : '';
@@ -794,7 +794,7 @@ function renderMore() {
             let instaHtml = '';
             instagram.posts.forEach(post => {
                 instaHtml += `<a href="${post.link}" target="_blank" class="block aspect-square overflow-hidden rounded-lg group">
-                    <img src="${post.image}" alt="${post.alt}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                    <img src="${post.image}" loading="lazy" alt="${post.alt}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
                 </a>`;
             });
             instaGrid.innerHTML = instaHtml;
