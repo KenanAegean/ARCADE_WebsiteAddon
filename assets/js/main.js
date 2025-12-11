@@ -5,7 +5,7 @@ let education = [];
 let gamesShowcase = { highlighted: [], inDevelopment: [] };
 let themes = {};
 let siteConfig = null;
-let socialLinks = [];
+let socialLinks = []; 
 let footerConfig = null;
 let instagram = null;
 let projectDetails = {};
@@ -35,7 +35,6 @@ async function fetchJSON(filename) {
 
 async function loadData() {
     try {
-        // Load all data files in parallel
         const [
             siteConfigData,
             portfolioItemsData,
@@ -60,20 +59,20 @@ async function loadData() {
             fetchJSON('navigation.json')
         ]);
 
-        // Assign loaded data to global variables
         siteConfig = siteConfigData || null;
         portfolioItems = (portfolioItemsData || []).filter(item => item.visible !== false);
         experience = experienceData || [];
         education = educationData || [];
         gamesShowcase = gamesShowcaseData || { highlighted: [], inDevelopment: [] };
-        socialLinks = (socialLinksData || []).filter(link => link.visible !== false);
+        socialLinks = socialLinksData || []; 
         footerConfig = footerData || null;
         instagram = instagramData || null;
         projectDetails = projectDetailsData || {};
-        navigation = navigationData || [];
+        // Sort navigation by order
+        navigation = (navigationData || []).filter(item => item.visible !== false).sort((a, b) => a.order - b.order);
 
-        // Theme colors configuration (hardcoded as they're part of the design system)
-        themes = {
+        // Theme colors configuration
+        const defaultThemes = {
             about: { hex: '#00f3ff' },
             games: { hex: '#ff0055' },
             portfolio: { hex: '#bc13fe' },
@@ -81,16 +80,17 @@ async function loadData() {
             education: { hex: '#0051ff' },
             more: { hex: '#39ff14' }
         };
+        themes = siteConfig?.themes || defaultThemes;
 
-        // Initial theme default - portfolio section
-        themeColor = themes.portfolio ? themes.portfolio.hex : '#bc13fe';
+        // Determine default section
+        const defaultNav = navigation.find(n => n.default) || navigation[0];
+        if (defaultNav) {
+            currentSection = defaultNav.section;
+            themeColor = themes[currentSection]?.hex || '#bc13fe';
+        }
+
         dataLoaded = true;
-
-        console.log('Data loaded successfully from separate files');
-        console.log('Portfolio items:', portfolioItems.length);
-        console.log('Experience entries:', experience.length);
-        console.log('Education entries:', education.length);
-        console.log('Games showcase:', gamesShowcase.highlighted?.length || 0, 'highlighted');
+        console.log('All Data Loaded Successfully');
         return true;
     } catch (error) {
         console.error('Error loading data:', error);
@@ -99,7 +99,7 @@ async function loadData() {
     }
 }
 
-// ==================== BACKGROUND ANIMATION ====================
+// ==================== BACKGROUND ANIMATION (RESTORED) ====================
 function initBackground() {
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
@@ -325,185 +325,278 @@ function initBackground() {
     animate();
 }
 
-// ==================== THEME UPDATE ====================
-function updateTheme(section) {
-    currentSection = section;
-    themeColor = themes[section] ? themes[section].hex : themes.about.hex;
-    document.documentElement.style.setProperty('--theme-color', themeColor);
+// ==================== RENDER CONTENT SECTIONS ====================
 
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-        const isActive = item.dataset.section === section;
-        const chevron = item.querySelector('.nav-chevron');
-        if (isActive) {
-            item.classList.add('active', 'text-white');
-            item.classList.remove('text-gray-500');
-            if (chevron) chevron.classList.remove('hidden');
-        } else {
-            item.classList.remove('active', 'text-white');
-            item.classList.add('text-gray-500');
-            if (chevron) chevron.classList.add('hidden');
-        }
+function renderNavigation() {
+    const navContainer = document.getElementById('main-nav');
+    if (!navContainer || !navigation) return;
+
+    let navHtml = '';
+    navigation.forEach(item => {
+        navHtml += `
+        <a href="${item.link}" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="${item.section}">
+            <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+            <i data-lucide="${item.icon}" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+            <span class="relative z-10">${item.label}</span>
+            <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+        </a>`;
     });
 
-    const statusBadge = document.getElementById('status-badge');
-    if (statusBadge) {
-        statusBadge.style.borderColor = themeColor + '60';
-        statusBadge.style.boxShadow = '0 0 15px ' + themeColor + '20';
-    }
-
-    const heroAccent = document.getElementById('hero-accent');
-    if (heroAccent) {
-        heroAccent.style.color = themeColor;
-        heroAccent.style.textShadow = '0 0 30px ' + themeColor + ', 0 0 60px ' + themeColor;
-    }
-
-    const pingElements = document.querySelectorAll('#status-badge .animate-ping');
-    pingElements.forEach(function(el) { el.style.backgroundColor = themeColor; });
-
-    const pingDot = document.querySelector('#status-badge .relative.inline-flex');
-    if (pingDot) { pingDot.style.backgroundColor = themeColor; }
-
-    updateFilterStyles();
-    updateDynamicColors();
+    navContainer.innerHTML = navHtml;
 }
 
-// ==================== UPDATE DYNAMIC COLORS ====================
-function updateDynamicColors() {
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-        const icon = item.querySelector('.nav-icon');
-        if (icon) {
-            if (item.classList.contains('active')) { icon.style.color = themeColor; }
-            else { icon.style.color = ''; }
-        }
+function renderSidebarSocials() {
+    const container = document.getElementById('sidebar-socials');
+    // Prioritize footer.json social links, fallback to legacy social-links.json if needed
+    const links = (footerConfig && footerConfig.social && footerConfig.social.links) ? footerConfig.social.links : socialLinks;
+    
+    if (!container || !links) return;
+
+    let html = '';
+    links.forEach(link => {
+        if (link.visible === false) return;
+        html += `
+        <a href="${link.url}" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="${link.platform}">
+            <i data-lucide="${link.icon}" class="w-5 h-5"></i>
+        </a>`;
     });
+    container.innerHTML = html;
+}
 
-    const mapPinIcon = document.querySelector('[data-lucide="map-pin"]');
-    if (mapPinIcon) { mapPinIcon.style.color = themeColor; }
+// Variable to store the timeout ID so we don't create duplicate loops
+let titleTypeTimeout = null;
 
-    const avatarRing = document.getElementById('avatar-ring');
-    if (avatarRing) {
-        avatarRing.style.borderColor = themeColor;
-        avatarRing.style.boxShadow = '0 0 20px ' + themeColor + '40';
+function renderPersonal() {
+    if (!siteConfig || !siteConfig.personal) return;
+
+    const { personal } = siteConfig;
+    
+    // Update Sidebar Avatar & Name
+    const avatarImg = document.getElementById('avatar-ring')?.querySelector('img');
+    if (avatarImg) avatarImg.src = personal.avatar;
+    
+    const sidebarTitle = document.querySelector('#sidebar h1');
+    if (sidebarTitle) sidebarTitle.textContent = personal.name;
+
+    // --- NEW LOGIC: Typewriter Effect ---
+    const titleContainer = document.querySelector('#sidebar .flex.flex-wrap');
+    
+    if (titleContainer && personal.titles && personal.titles.length > 0) {
+        // 1. Clear existing static badges
+        titleContainer.innerHTML = '';
+        
+        // 2. Create the container wrapper (to maintain layout)
+        const wrapper = document.createElement('div');
+        wrapper.className = 'px-3 py-1.5 rounded bg-white/5 border border-white/10 inline-flex items-center justify-center min-w-[200px] min-h-[32px]';
+        
+        // 3. Create text element
+        const typeText = document.createElement('span');
+        typeText.className = 'text-[11px] font-mono text-gray-300 whitespace-nowrap';
+        
+        // 4. Create blinking cursor
+        const cursor = document.createElement('span');
+        cursor.textContent = '|';
+        cursor.className = 'ml-1 animate-pulse text-[11px]';
+        cursor.style.color = 'var(--theme-color)';
+        
+        wrapper.appendChild(typeText);
+        wrapper.appendChild(cursor);
+        titleContainer.appendChild(wrapper);
+
+        // 5. Clear previous timer if exists
+        if (titleTypeTimeout) clearTimeout(titleTypeTimeout);
+
+        // 6. Typewriter Variables
+        let loopNum = 0;
+        let isDeleting = false;
+        let charIndex = 0;
+        let typeSpeed = 100;
+
+        function type() {
+            const i = loopNum % personal.titles.length;
+            // Use Array.from to handle emojis correctly (treats 🎸 as 1 char)
+            const fullTxtArray = Array.from(personal.titles[i]);
+
+            if (isDeleting) {
+                charIndex--;
+                typeSpeed = 50; // Delete faster
+            } else {
+                charIndex++;
+                typeSpeed = 100; // Type normal
+            }
+
+            // Update text
+            typeText.textContent = fullTxtArray.slice(0, charIndex).join('');
+
+            // Logic for switching states
+            if (!isDeleting && charIndex === fullTxtArray.length) {
+                // Finished typing word
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                // Finished deleting
+                isDeleting = false;
+                loopNum++;
+                typeSpeed = 500; // Pause before next word
+            }
+
+            titleTypeTimeout = setTimeout(type, typeSpeed);
+        }
+
+        // Start the loop
+        type();
+    }
+    // ----------------------------------------
+    
+    // Update Hero Section
+    if (personal.about) {
+        const heroTitle = document.getElementById('hero-title');
+        const heroDesc = document.getElementById('hero-desc');
+        if (heroTitle) heroTitle.innerHTML = personal.about.greeting;
+        if (heroDesc) heroDesc.innerHTML = personal.about.description;
     }
 
-    const ctaPrimary = document.getElementById('cta-primary');
-    if (ctaPrimary) {
-        ctaPrimary.style.backgroundColor = themeColor;
-        ctaPrimary.style.boxShadow = '0 0 30px ' + themeColor + '66';
+    // Update Hero Buttons
+    if (siteConfig.overview_buttons) {
+        const btnContainer = document.getElementById('hero-buttons');
+        if (btnContainer) {
+            let btnsHtml = '';
+            siteConfig.overview_buttons.forEach(btn => {
+                if (btn.visible === false) return;
+                
+                if (btn.style === 'primary') {
+                    btnsHtml += `<a href="${btn.href}" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1" style="background-color: var(--theme-color); box-shadow: 0 0 30px var(--theme-color);">${btn.label}</a>`;
+                } else {
+                    btnsHtml += `<a href="${btn.href}" class="px-8 py-4 border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded hover:bg-white/10 hover:border-white transition-colors backdrop-blur-sm">${btn.label}</a>`;
+                }
+            });
+            btnContainer.innerHTML = btnsHtml;
+        }
+    }
+}
+
+function renderFooter() {
+    const footerEl = document.getElementById('main-footer');
+    if (!footerEl || !footerConfig || !footerConfig.enabled) {
+        if(footerEl) footerEl.style.display = 'none';
+        return;
     }
 
-    const sidebarGlow = document.getElementById('sidebar-glow');
-    if (sidebarGlow) {
-        sidebarGlow.style.background = 'linear-gradient(to right, transparent, ' + themeColor + ', transparent)';
+    let html = '';
+    if (footerConfig.text) {
+        html += `<p>${footerConfig.text}</p>`;
     }
+    if (footerConfig.copyright && footerConfig.copyright.enabled) {
+        html += `<p class="mt-2">${footerConfig.copyright.text}</p>`;
+    }
+    
+    footerEl.innerHTML = html;
 }
 
 // ==================== HELPER FUNCTIONS ====================
 function capitalizeCategory(category) {
-    return category.split(' ').map(function(word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-    }).join(' ');
+    return category.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
 function getHoverIcon(iconType) {
     const iconMap = {
-        'unity': 'gamepad-2',
-        'unreal': 'gamepad-2',
-        'web': 'globe',
-        'django': 'server',
-        'python': 'terminal',
-        'cpp': 'code',
-        'csharp': 'code',
-        'android': 'smartphone',
-        'design': 'palette',
-        'music': 'music',
-        'default': 'eye'
+        'unity': 'gamepad-2', 'unreal': 'gamepad-2', 'web': 'globe', 'django': 'server',
+        'python': 'terminal', 'cpp': 'code', 'csharp': 'code', 'android': 'smartphone',
+        'design': 'palette', 'music': 'music', 'default': 'eye'
     };
     return iconMap[iconType] || iconMap['default'];
 }
 
-// ==================== RENDER FUNCTIONS ====================
 function renderGames() {
     const grid = document.getElementById('games-grid');
     if (!grid) return;
 
-    const highlightedGames = gamesShowcase.highlighted ? gamesShowcase.highlighted.filter(function(g) { return g.visible !== false; }) : [];
+    const highlightedGames = gamesShowcase.highlighted ? gamesShowcase.highlighted.filter(g => g.visible !== false) : [];
 
     if (highlightedGames.length === 0) return;
 
     let html = '';
-    highlightedGames.forEach(function(game, idx) {
-        html += '<a href="' + game.link + '" target="_blank" class="game-card group relative ' + (idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video') + ' bg-black/60 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">' +
-            '<div class="game-border absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-xl z-20 pointer-events-none"></div>' +
-            '<div class="game-bg absolute inset-0 bg-cover bg-center opacity-60 transition-all duration-700" style="background-image: url(' + game.image + ')"></div>' +
-            '<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>' +
-            '<div class="absolute bottom-0 left-0 p-6 z-10">' +
-                '<h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-lg">' + game.title + '</h3>' +
-                '<div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color)">' +
-                    '<i data-lucide="gamepad-2" class="w-4 h-4"></i> Click to Play' +
-                '</div>' +
-            '</div>' +
-        '</a>';
+    highlightedGames.forEach((game, idx) => {
+        html += `<a href="${game.link}" target="_blank" class="game-card group relative ${idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video'} bg-black/60 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+            <div class="game-border absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-xl z-20 pointer-events-none"></div>
+            <div class="game-bg absolute inset-0 bg-cover bg-center opacity-60 transition-all duration-700" style="background-image: url(${game.image})"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
+            <div class="absolute bottom-0 left-0 p-6 z-10">
+                <h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-lg">${game.title}</h3>
+                <div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color)">
+                    <i data-lucide="gamepad-2" class="w-4 h-4"></i> Click to Play
+                </div>
+            </div>
+        </a>`;
     });
     grid.innerHTML = html;
-    lucide.createIcons();
 }
 
 function renderPortfolio(filter) {
     filter = filter || 'all';
     let items = portfolioItems;
 
-    // Apply filter
-    if (filter === 'game') {
-        items = items.filter(function(i) { return i.category.indexOf('game') !== -1; });
-    } else if (filter === 'web') {
-        items = items.filter(function(i) { return i.category.indexOf('web') !== -1; });
-    } else if (filter === 'app') {
-        items = items.filter(function(i) { return i.category.indexOf('windows') !== -1 || i.category.indexOf('mobile') !== -1; });
-    } else if (filter === 'highlighted') {
-        items = items.filter(function(i) { return i.highlighted === true; });
-    }
+    // Apply filters
+    if (filter === 'game') items = items.filter(i => i.category.includes('game'));
+    else if (filter === 'web') items = items.filter(i => i.category.includes('web'));
+    // New Logic for Android (checks for "mobile" in category)
+    else if (filter === 'android') items = items.filter(i => i.category.includes('mobile'));
+    // New Logic for Windows
+    else if (filter === 'windows') items = items.filter(i => i.category.includes('windows'));
+    else if (filter === 'other') items = items.filter(i => i.category.includes('other'));
+    else if (filter === 'highlighted') items = items.filter(i => i.highlighted === true);
 
     const grid = document.getElementById('portfolio-grid');
     if (!grid) return;
 
     let html = '';
-    items.forEach(function(item) {
+    items.forEach(item => {
         const iconName = getHoverIcon(item.iconType);
         const targetAttr = (item.opennewtab !== false) ? 'target="_blank" rel="noopener noreferrer"' : '';
 
         // Generate tags HTML
         let tagsHtml = '';
         if (item.tags && item.tags.length > 0) {
-            tagsHtml = item.tags.slice(0, 2).map(function(tag) {
-                return '<span class="px-2 py-1 text-[8px] uppercase font-bold bg-black/80 text-white border border-white/10 shadow-[0_0_10px_black] backdrop-blur-sm">' + tag + '</span>';
+            tagsHtml = item.tags.slice(0, 3).map((tag, index) => {
+                let styleAttr = '';
+                let tagClass = "bg-black/80 text-white border-white/10";
+                
+                // Highlight the 3rd tag (index 2)
+                if (index === 2) {
+                    tagClass = "text-black font-bold border-transparent";
+                    styleAttr = `style="background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color);"`;
+                }
+
+                return `<span class="px-2 py-1 text-[8px] uppercase font-bold border shadow-[0_0_10px_black] backdrop-blur-sm ${tagClass}" ${styleAttr}>${tag}</span>`;
             }).join('');
         }
 
-        html += '<a href="' + item.link + '" ' + targetAttr + ' class="project-card group relative block bg-[#13111c]/80 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">' +
-            '<div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>' +
-            '<div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">' +
-                '<img src="' + item.image + '" alt="' + item.title + '" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\'">' +
-                '<div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">' +
-                    '<i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>' +
-                '</div>' +
-                '<div class="absolute top-2 right-2 flex flex-col items-end gap-1">' + tagsHtml + '</div>' +
-            '</div>' +
-            '<div class="p-5 flex-grow flex flex-col relative z-10">' +
-                '<h4 class="card-title text-lg font-bold text-white mb-2 leading-tight transition-colors">' + item.title + '</h4>' +
-                '<p class="text-gray-400 text-xs mb-4 line-clamp-2 flex-grow font-mono leading-relaxed group-hover:text-gray-300">' + item.description + '</p>' +
-                '<div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 font-bold text-[10px] uppercase tracking-wider transition-colors duration-300" style="color: var(--theme-color)">' +
-                    '<span class="flex items-center gap-2">' +
-                        '<i data-lucide="' + iconName + '" class="w-3 h-3"></i>' +
-                        capitalizeCategory(item.category) +
-                    '</span>' +
-                    '<i data-lucide="external-link" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>' +
-                '</div>' +
-            '</div>' +
-        '</a>';
+        html += `<a href="${item.link}" ${targetAttr} class="project-card group relative block bg-[#13111c]/80 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">
+            <div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>
+            <div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">
+                <img src="${item.image}" alt="${item.title}" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                <div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">
+                    <i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>
+                </div>
+                <div class="absolute top-2 right-2 flex flex-col items-end gap-1">${tagsHtml}</div>
+            </div>
+            <div class="p-5 flex-grow flex flex-col relative z-10">
+                <h4 class="card-title text-lg font-bold text-white mb-2 leading-tight transition-colors">${item.title}</h4>
+                <p class="text-gray-400 text-xs mb-4 line-clamp-2 flex-grow font-mono leading-relaxed group-hover:text-gray-300">${item.description}</p>
+                <div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 font-bold text-[10px] uppercase tracking-wider transition-colors duration-300" style="color: var(--theme-color)">
+                    <span class="flex items-center gap-2">
+                        <i data-lucide="${iconName}" class="w-3 h-3"></i>
+                        ${capitalizeCategory(item.category)}
+                    </span>
+                    <i data-lucide="external-link" class="w-3 h-3 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </div>
+        </a>`;
     });
     grid.innerHTML = html;
-    lucide.createIcons();
+    
+    // Re-initialize icons
+    if(window.lucide) lucide.createIcons();
 }
 
 function renderExperience() {
@@ -511,44 +604,42 @@ function renderExperience() {
     if (!list || experience.length === 0) return;
 
     let html = '';
-    experience.forEach(function(job) {
-        // Build positions HTML with responsibilities
+    experience.forEach(job => {
         let positionsHtml = '';
-        job.positions.forEach(function(pos) {
+        job.positions.forEach(pos => {
             let responsibilitiesHtml = '';
             if (pos.responsibilities && pos.responsibilities.length > 0) {
-                responsibilitiesHtml = '<ul class="mt-3 space-y-2">';
-                pos.responsibilities.forEach(function(r) {
-                    responsibilitiesHtml += '<li class="text-sm text-gray-300 leading-relaxed flex items-start gap-2"><span class="text-[10px] mt-1.5" style="color: var(--theme-color)">▸</span><span>' + r + '</span></li>';
+                responsibilitiesHtml = `<ul class="mt-3 space-y-2">`;
+                pos.responsibilities.forEach(r => {
+                    responsibilitiesHtml += `<li class="text-sm text-gray-300 leading-relaxed flex items-start gap-2"><span class="text-[10px] mt-1.5" style="color: var(--theme-color)">▸</span><span>${r}</span></li>`;
                 });
-                responsibilitiesHtml += '</ul>';
+                responsibilitiesHtml += `</ul>`;
             }
 
-            positionsHtml += '<div class="exp-card bg-black/40 p-6 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden mb-4">' +
-                '<div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3">' +
-                    '<h4 class="exp-title text-xl font-bold text-white transition-colors">' + pos.title + '</h4>' +
-                    '<span class="text-xs font-mono text-gray-400 bg-black/50 px-3 py-1 rounded border border-white/10 mt-2 md:mt-0">' + pos.startDate + ' — ' + pos.endDate + '</span>' +
-                '</div>' +
-                responsibilitiesHtml +
-            '</div>';
+            positionsHtml += `<div class="exp-card bg-black/40 p-6 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden mb-4">
+                <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3">
+                    <h4 class="exp-title text-xl font-bold text-white transition-colors">${pos.title}</h4>
+                    <span class="text-xs font-mono text-gray-400 bg-black/50 px-3 py-1 rounded border border-white/10 mt-2 md:mt-0">${pos.startDate} — ${pos.endDate}</span>
+                </div>
+                ${responsibilitiesHtml}
+            </div>`;
         });
 
-        // Company logo
         const logoHtml = (job.logo && job.url)
-            ? '<a href="' + job.url + '" target="_blank" class="shrink-0"><img src="' + job.logo + '" alt="' + job.company + ' logo" class="w-12 h-12 rounded-lg bg-white/10 p-1 object-contain hover:scale-110 transition-transform"></a>'
+            ? `<a href="${job.url}" target="_blank" class="shrink-0"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 rounded-lg bg-white/10 p-1 object-contain hover:scale-110 transition-transform"></a>`
             : '';
 
-        html += '<div class="relative pl-8 group">' +
-            '<div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>' +
-            '<div class="flex items-center gap-4 mb-4">' +
-                logoHtml +
-                '<div>' +
-                    '<h3 class="text-2xl font-bold text-white">' + job.company + '</h3>' +
-                    (job.url ? '<a href="' + job.url + '" target="_blank" class="text-xs font-mono hover:underline" style="color: var(--theme-color)">Visit Company Website →</a>' : '') +
-                '</div>' +
-            '</div>' +
-            '<div class="space-y-4">' + positionsHtml + '</div>' +
-        '</div>';
+        html += `<div class="relative pl-8 group">
+            <div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>
+            <div class="flex items-center gap-4 mb-4">
+                ${logoHtml}
+                <div>
+                    <h3 class="text-2xl font-bold text-white">${job.company}</h3>
+                    ${job.url ? `<a href="${job.url}" target="_blank" class="text-xs font-mono hover:underline" style="color: var(--theme-color)">Visit Company Website →</a>` : ''}
+                </div>
+            </div>
+            <div class="space-y-4">${positionsHtml}</div>
+        </div>`;
     });
     list.innerHTML = html;
 }
@@ -558,142 +649,156 @@ function renderEducation() {
     if (!grid || education.length === 0) return;
 
     let html = '';
-    education.forEach(function(edu) {
-        // Build degrees HTML
+    education.forEach(edu => {
         let degreesHtml = '';
         if (edu.degrees && edu.degrees.length > 0) {
-            edu.degrees.forEach(function(degree) {
-                degreesHtml += '<div class="mb-3 last:mb-0">' +
-                    '<h5 class="text-sm font-bold text-white">' + degree.title + '</h5>' +
-                    '<span class="text-xs text-gray-500 font-mono">' + degree.startDate + ' — ' + degree.endDate + '</span>' +
-                    (degree.description ? '<p class="text-xs text-gray-400 mt-1">' + degree.description + '</p>' : '') +
-                '</div>';
+            edu.degrees.forEach(degree => {
+                degreesHtml += `<div class="mb-3 last:mb-0">
+                    <h5 class="text-sm font-bold text-white">${degree.title}</h5>
+                    <span class="text-xs text-gray-500 font-mono">${degree.startDate} — ${degree.endDate}</span>
+                    ${degree.description ? `<p class="text-xs text-gray-400 mt-1">${degree.description}</p>` : ''}
+                </div>`;
             });
         }
 
-        // Logo HTML
         const logoHtml = edu.logo
-            ? '<img src="' + edu.logo + '" alt="' + edu.institution + ' logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">'
-            : '<i data-lucide="graduation-cap" class="w-8 h-8"></i>';
+            ? `<img src="${edu.logo}" alt="${edu.institution} logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">`
+            : `<i data-lucide="graduation-cap" class="w-8 h-8"></i>`;
 
         const clickableClass = edu.url ? 'cursor-pointer hover:scale-[1.02]' : '';
-        const onClickAttr = edu.url ? 'onclick="window.open(\'' + edu.url + '\', \'_blank\')"' : '';
+        const onClickAttr = edu.url ? `onclick="window.open('${edu.url}', '_blank')"` : '';
 
-        html += '<div class="edu-card group p-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ' + clickableClass + '" ' + onClickAttr + '>' +
-            '<div class="flex items-start gap-4 mb-4">' +
-                '<div class="edu-icon transition-colors duration-300 p-2 bg-white/5 rounded-lg" style="color: var(--theme-color)">' +
-                    logoHtml +
-                '</div>' +
-                '<div class="flex-grow">' +
-                    '<h4 class="edu-title text-lg font-bold text-white leading-tight mb-1 transition-colors">' + edu.institution + '</h4>' +
-                    (edu.url ? '<span class="text-xs font-mono opacity-50 group-hover:opacity-100 transition-opacity" style="color: var(--theme-color)">Click to visit →</span>' : '') +
-                '</div>' +
-            '</div>' +
-            '<div class="border-t border-white/5 pt-4">' + degreesHtml + '</div>' +
-        '</div>';
+        html += `<div class="edu-card group p-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ${clickableClass}" ${onClickAttr}>
+            <div class="flex items-start gap-4 mb-4">
+                <div class="edu-icon transition-colors duration-300 p-2 bg-white/5 rounded-lg" style="color: var(--theme-color)">
+                    ${logoHtml}
+                </div>
+                <div class="flex-grow">
+                    <h4 class="edu-title text-lg font-bold text-white leading-tight mb-1 transition-colors">${edu.institution}</h4>
+                    ${edu.url ? `<span class="text-xs font-mono opacity-50 group-hover:opacity-100 transition-opacity" style="color: var(--theme-color)">Click to visit →</span>` : ''}
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-4">${degreesHtml}</div>
+        </div>`;
     });
     grid.innerHTML = html;
-    lucide.createIcons();
 }
 
 function renderMore() {
     if (!siteConfig) return;
 
-    // Update Spotify embed
+    // Spotify
     const spotifyEmbed = document.getElementById('spotify-embed');
     if (spotifyEmbed && siteConfig.external && siteConfig.external.spotifyArtistId) {
-        const spotifyUrl = 'https://open.spotify.com/embed/artist/' + siteConfig.external.spotifyArtistId + '?utm_source=generator&theme=0';
-        spotifyEmbed.src = spotifyUrl;
+        spotifyEmbed.src = 'https://open.spotify.com/embed/artist/' + siteConfig.external.spotifyArtistId + '?utm_source=generator&theme=0';
     }
 
-    // Update Steam stats and profile link
+    // Steam
     const steamStats = document.getElementById('steam-stats');
     const steamProfileLink = document.getElementById('steam-profile-link');
     if (siteConfig.external && siteConfig.external.steamUsername) {
-        const steamUsername = siteConfig.external.steamUsername;
-        
-        // Set profile link
-        if (steamProfileLink) {
-            steamProfileLink.href = 'https://steamcommunity.com/id/' + steamUsername;
-        }
-        
-        // Try steam-stat.vercel.app service
-        if (steamStats) {
-            const steamUrl = 'https://steam-stat.vercel.app/api?profileName=' + steamUsername;
-            steamStats.src = steamUrl;
-        }
+        if (steamProfileLink) steamProfileLink.href = 'https://steamcommunity.com/id/' + siteConfig.external.steamUsername;
+        if (steamStats) steamStats.src = 'https://steam-stat.vercel.app/api?profileName=' + siteConfig.external.steamUsername;
     }
 
-    // Update GitHub stats with HTTPS and multiple cards
+    // GitHub
     if (siteConfig.external && siteConfig.external.githubUsername) {
-        const githubUsername = siteConfig.external.githubUsername;
+        const ghUser = siteConfig.external.githubUsername;
+        const ghStats = document.getElementById('github-stats');
+        if (ghStats) ghStats.src = `https://github-readme-stats.vercel.app/api?username=${ghUser}&show_icons=true&theme=github_dark&hide_border=true&bg_color=0d1117`;
         
-        // GitHub Stats Card
-        const githubStats = document.getElementById('github-stats');
-        if (githubStats) {
-            const statsUrl = 'https://github-readme-stats.vercel.app/api?username=' + githubUsername + '&show_icons=true&theme=github_dark&hide_border=true&bg_color=0d1117';
-            githubStats.src = statsUrl;
-        }
-        
-        // GitHub Streak Card
-        const githubStreak = document.getElementById('github-streak');
-        if (githubStreak) {
-            const streakUrl = 'https://github-readme-streak-stats.herokuapp.com/?user=' + githubUsername + '&theme=github-dark-blue&hide_border=true&background=0d1117';
-            githubStreak.src = streakUrl;
-        }
+        const ghStreak = document.getElementById('github-streak');
+        if (ghStreak) ghStreak.src = `https://github-readme-streak-stats.herokuapp.com/?user=${ghUser}&theme=github-dark-blue&hide_border=true&background=0d1117`;
     }
 
-    // Update Instagram
+    // Instagram
     if (instagram) {
         const instaAvatar = document.getElementById('insta-avatar');
         const instaUsername = document.getElementById('insta-username');
         const instaGrid = document.getElementById('insta-grid');
 
-        if (instaAvatar && instagram.profileImage) {
-            instaAvatar.src = instagram.profileImage;
-        }
-
-        if (instaUsername && instagram.profileUrl && instagram.username) {
+        if (instaAvatar && instagram.profileImage) instaAvatar.src = instagram.profileImage;
+        if (instaUsername && instagram.username) {
             instaUsername.href = instagram.profileUrl;
             instaUsername.textContent = '@' + instagram.username;
         }
 
         if (instaGrid && instagram.posts && instagram.posts.length > 0) {
             let instaHtml = '';
-            instagram.posts.forEach(function(post) {
-                instaHtml += '<a href="' + post.link + '" target="_blank" class="block aspect-square overflow-hidden rounded-lg group">' +
-                    '<img src="' + post.image + '" alt="' + post.alt + '" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">' +
-                '</a>';
+            instagram.posts.forEach(post => {
+                instaHtml += `<a href="${post.link}" target="_blank" class="block aspect-square overflow-hidden rounded-lg group">
+                    <img src="${post.image}" alt="${post.alt}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                </a>`;
             });
             instaGrid.innerHTML = instaHtml;
         }
     }
 }
 
-function setupCVLocalization() {
-    const cvLink = document.getElementById('cv-download-link');
-    const cvLinkExp = document.getElementById('cv-download-link-exp');
+// ==================== THEME & UI LOGIC ====================
 
-    if (!siteConfig || !siteConfig.cv) return;
+function updateTheme(section) {
+    currentSection = section;
+    // Ensure we have a valid color, defaulting to purple if not found
+    themeColor = (themes[section] && themes[section].hex) ? themes[section].hex : '#bc13fe';
+    document.documentElement.style.setProperty('--theme-color', themeColor);
 
-    const userInTurkey = function() {
-        const lang = (navigator.language || '').toLowerCase();
-        const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
-        return lang.startsWith('tr') || tz.includes('istanbul');
-    };
+    // Update Nav Active States
+    document.querySelectorAll('.nav-item').forEach(item => {
+        const isActive = item.dataset.section === section;
+        const chevron = item.querySelector('.nav-chevron');
+        const icon = item.querySelector('.nav-icon');
 
-    const cvUrl = userInTurkey() ? siteConfig.cv.turkey : siteConfig.cv.default;
+        if (isActive) {
+            item.classList.add('active', 'text-white');
+            item.classList.remove('text-gray-500');
+            if (chevron) chevron.classList.remove('hidden');
+            // FIX: Set active color explicitly
+            if (icon) icon.style.color = themeColor; 
+        } else {
+            item.classList.remove('active', 'text-white');
+            item.classList.add('text-gray-500');
+            if (chevron) chevron.classList.add('hidden');
+            // FIX: Clear color so it reverts to CSS class defaults
+            if (icon) icon.style.color = ''; 
+        }
+    });
 
-    if (cvLink) {
-        cvLink.href = cvUrl;
+    // Dynamic UI Updates
+    updateDynamicColors();
+    updateFilterStyles();
+}
+
+function updateDynamicColors() {
+    const elementsToColor = [
+        { selector: '#status-badge', property: 'borderColor', value: themeColor + '60' },
+        // #hero-accent handles color here, shadow handled below
+        { selector: '#hero-accent', property: 'color', value: themeColor }, 
+        { selector: '#avatar-ring', property: 'borderColor', value: themeColor },
+        { selector: '#cta-primary', property: 'backgroundColor', value: themeColor },
+        { selector: '[data-lucide="map-pin"]', property: 'color', value: themeColor },
+        { selector: '#sidebar-glow', property: 'background', value: `linear-gradient(to right, transparent, ${themeColor}, transparent)` }
+    ];
+
+    elementsToColor.forEach(el => {
+        const domEl = document.querySelector(el.selector);
+        if (domEl) domEl.style[el.property] = el.value;
+    });
+
+    // FIX: Apply Glow Effect (Text Shadow) separately
+    const heroAccent = document.getElementById('hero-accent');
+    if (heroAccent) {
+        heroAccent.style.textShadow = `0 0 30px ${themeColor}, 0 0 60px ${themeColor}`;
     }
-    if (cvLinkExp) {
-        cvLinkExp.href = cvUrl;
-    }
+    
+    // Icon colors in Nav
+    document.querySelectorAll('.nav-item.active .nav-icon').forEach(icon => {
+        icon.style.color = themeColor;
+    });
 }
 
 function updateFilterStyles() {
-    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
         const isActive = btn.dataset.filter === currentFilter;
         if (isActive) {
             btn.style.backgroundColor = themeColor;
@@ -707,25 +812,21 @@ function updateFilterStyles() {
     });
 }
 
-// ==================== EVENT LISTENERS ====================
-function handleScroll() {
-    const sections = ['about', 'games', 'portfolio', 'experience', 'education', 'more'];
-    const scrollPosition = window.scrollY + window.innerHeight * 0.3;
+function setupCVLocalization() {
+    const cvLinks = [document.getElementById('cv-download-link'), document.getElementById('cv-download-link-exp')];
+    if (!siteConfig || !siteConfig.cv) return;
 
-    for (let i = 0; i < sections.length; i++) {
-        const section = sections[i];
-        const el = document.getElementById(section);
-        if (el) {
-            const offsetTop = el.offsetTop;
-            const offsetHeight = el.offsetHeight;
-            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                if (currentSection !== section) {
-                    updateTheme(section);
-                }
-                break;
-            }
-        }
-    }
+    const userInTurkey = () => {
+        const lang = (navigator.language || '').toLowerCase();
+        const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
+        return lang.startsWith('tr') || tz.includes('istanbul');
+    };
+
+    const cvUrl = userInTurkey() ? siteConfig.cv.turkey : siteConfig.cv.default;
+
+    cvLinks.forEach(link => {
+        if (link) link.href = cvUrl;
+    });
 }
 
 function initEventListeners() {
@@ -734,21 +835,31 @@ function initEventListeners() {
         if (!scrollThrottle) {
             scrollThrottle = setTimeout(function() {
                 scrollThrottle = null;
-                handleScroll();
-            }, 16);
+                const sections = navigation.map(n => n.section);
+                const scrollPos = window.scrollY + window.innerHeight * 0.3;
+                
+                for (const section of sections) {
+                    const el = document.getElementById(section);
+                    if (el && scrollPos >= el.offsetTop && scrollPos < el.offsetTop + el.offsetHeight) {
+                        if (currentSection !== section) updateTheme(section);
+                        break;
+                    }
+                }
+            }, 50);
         }
     });
 
-    document.querySelectorAll('.nav-item').forEach(function(item) {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const section = item.dataset.section;
-            const el = document.getElementById(section);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-            document.getElementById('sidebar').classList.add('-translate-x-full');
-            document.getElementById('menu-icon').classList.remove('hidden');
-            document.getElementById('close-icon').classList.add('hidden');
-        });
+    document.getElementById('main-nav').addEventListener('click', function(e) {
+        const link = e.target.closest('.nav-item');
+        if (!link) return;
+        e.preventDefault();
+        const section = link.dataset.section;
+        const el = document.getElementById(section);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        
+        document.getElementById('sidebar').classList.add('-translate-x-full');
+        document.getElementById('menu-icon').classList.remove('hidden');
+        document.getElementById('close-icon').classList.add('hidden');
     });
 
     document.getElementById('mobile-toggle').addEventListener('click', function() {
@@ -777,23 +888,39 @@ function initEventListeners() {
 // ==================== INIT ====================
 async function init() {
     await loadData();
-    lucide.createIcons();
-    initBackground();
+    
+    // 1. Render all dynamic sections
+    renderNavigation();
+    renderPersonal();
+    renderSidebarSocials();
     renderGames();
-    renderPortfolio('highlighted'); // Default to highlighted
+    renderPortfolio('highlighted');
     renderExperience();
     renderEducation();
     renderMore();
+    renderFooter();
+    
+    // 2. Setup Logic & Events
     setupCVLocalization();
     initEventListeners();
-    updateTheme('portfolio'); // Default section
-    updateFilterStyles(); // Apply highlighted filter style
+    
+    // 3. Initialize Visuals
+    lucide.createIcons();
+    initBackground();
+    
+    // 4. Set Initial Theme based on default nav item
+    const defaultNav = navigation.find(n => n.default);
+    const startSection = defaultNav ? defaultNav.section : 'portfolio';
+    
+    // Force immediate update to set colors correctly
+    updateTheme(startSection);
+    updateFilterStyles();
 
-    // Scroll to portfolio section on load
-    setTimeout(function() {
-        const portfolioSection = document.getElementById('portfolio');
-        if (portfolioSection) {
-            portfolioSection.scrollIntoView({ behavior: 'auto' });
+    // FIX: Scroll to default section
+    setTimeout(() => {
+        const el = document.getElementById(startSection);
+        if(el) {
+            el.scrollIntoView({ behavior: 'auto' });
         }
     }, 100);
 }
