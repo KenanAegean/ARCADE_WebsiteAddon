@@ -8,46 +8,89 @@ let siteConfig = null;
 let socialLinks = [];
 let footerConfig = null;
 let instagram = null;
+let projectDetails = {};
+let navigation = [];
 
 let currentSection = 'portfolio';
 let currentFilter = 'highlighted';
 let themeColor = '#bc13fe';
 let dataLoaded = false;
 
+// Base path for data files
+const DATA_PATH = './assets/data/';
+
 // ==================== DATA LOADING ====================
+async function fetchJSON(filename) {
+    try {
+        const response = await fetch(DATA_PATH + filename);
+        if (!response.ok) {
+            throw new Error('Failed to load ' + filename);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error loading ' + filename + ':', error);
+        return null;
+    }
+}
+
 async function loadData() {
     try {
-        const response = await fetch('./assets/data/data.json');
-        if (!response.ok) {
-            throw new Error('Failed to load data.json');
-        }
-        const data = await response.json();
-        
-        // Load all data from unified JSON
-        siteConfig = data.siteConfig || null;
-        socialLinks = (data.socialLinks || []).filter(link => link.visible !== false);
-        portfolioItems = (data.portfolioItems || []).filter(item => item.visible !== false);
-        experience = data.experience || [];
-        education = data.education || [];
-        gamesShowcase = data.gamesShowcase || { highlighted: [], inDevelopment: [] };
-        footerConfig = data.footer || null;
-        instagram = data.instagram || null;
-        themes = data.themes || {
+        // Load all data files in parallel
+        const [
+            siteConfigData,
+            portfolioItemsData,
+            experienceData,
+            educationData,
+            gamesShowcaseData,
+            socialLinksData,
+            footerData,
+            instagramData,
+            projectDetailsData,
+            navigationData
+        ] = await Promise.all([
+            fetchJSON('site-config.json'),
+            fetchJSON('portfolio-items.json'),
+            fetchJSON('experience.json'),
+            fetchJSON('education.json'),
+            fetchJSON('games-showcase.json'),
+            fetchJSON('social-links.json'),
+            fetchJSON('footer.json'),
+            fetchJSON('instagram.json'),
+            fetchJSON('project-details.json'),
+            fetchJSON('navigation.json')
+        ]);
+
+        // Assign loaded data to global variables
+        siteConfig = siteConfigData || null;
+        portfolioItems = (portfolioItemsData || []).filter(item => item.visible !== false);
+        experience = experienceData || [];
+        education = educationData || [];
+        gamesShowcase = gamesShowcaseData || { highlighted: [], inDevelopment: [] };
+        socialLinks = (socialLinksData || []).filter(link => link.visible !== false);
+        footerConfig = footerData || null;
+        instagram = instagramData || null;
+        projectDetails = projectDetailsData || {};
+        navigation = navigationData || [];
+
+        // Theme colors configuration (hardcoded as they're part of the design system)
+        themes = {
             about: { hex: '#00f3ff' },
             games: { hex: '#ff0055' },
             portfolio: { hex: '#bc13fe' },
             experience: { hex: '#ffd700' },
-            education: { hex: '#0051ff' }
+            education: { hex: '#0051ff' },
+            more: { hex: '#39ff14' }
         };
-        
+
         // Initial theme default - portfolio section
         themeColor = themes.portfolio ? themes.portfolio.hex : '#bc13fe';
         dataLoaded = true;
-        
-        console.log('Data loaded successfully');
+
+        console.log('Data loaded successfully from separate files');
         console.log('Portfolio items:', portfolioItems.length);
         console.log('Experience entries:', experience.length);
         console.log('Education entries:', education.length);
+        console.log('Games showcase:', gamesShowcase.highlighted?.length || 0, 'highlighted');
         return true;
     } catch (error) {
         console.error('Error loading data:', error);
@@ -60,17 +103,17 @@ async function loadData() {
 function initBackground() {
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     let time = 0;
-    
+
     const mouse = { x: null, y: null, radius: 250 };
-    
+
     document.addEventListener('mousemove', function(e) {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
     });
-    
+
     document.addEventListener('mouseleave', function() {
         mouse.x = null;
         mouse.y = null;
@@ -86,7 +129,7 @@ function initBackground() {
         { type: 'terminal', x: 0.1 + Math.random() * 0.2, y: 0.55 + Math.random() * 0.3, scale: 40 + Math.random() * 20, rx: Math.random() * Math.PI, ry: Math.random() * Math.PI, speedX: -0.0007 - Math.random() * 0.0008, speedY: 0.001 + Math.random() * 0.001, vx: (Math.random() - 0.5) * 0.00003, vy: (Math.random() - 0.5) * 0.00002, baseX: 0, baseY: 0, driftAngle: Math.random() * Math.PI * 2, driftSpeed: 0.0007 + Math.random() * 0.0008, driftRadius: 0.005 + Math.random() * 0.005 },
         { type: 'potion', x: 0.4 + Math.random() * 0.2, y: 0.7 + Math.random() * 0.2, scale: 30 + Math.random() * 15, rx: Math.random() * Math.PI, ry: Math.random() * Math.PI, speedX: 0.0015 + Math.random() * 0.001, speedY: -0.0005 - Math.random() * 0.001, vx: (Math.random() - 0.5) * 0.00004, vy: (Math.random() - 0.5) * 0.00003, baseX: 0, baseY: 0, driftAngle: Math.random() * Math.PI * 2, driftSpeed: 0.0009 + Math.random() * 0.001, driftRadius: 0.004 + Math.random() * 0.005 }
     ];
-    
+
     shapes.forEach(function(shape) {
         shape.baseX = shape.x;
         shape.baseY = shape.y;
@@ -159,7 +202,7 @@ function initBackground() {
         canvas.height = window.innerHeight;
         createGrid();
     }
-    
+
     window.addEventListener('resize', resize);
     resize();
 
@@ -181,7 +224,7 @@ function initBackground() {
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         const maxDist = Math.sqrt(centerX * centerX + centerY * centerY);
-        
+
         for (let i = 0; i < gridDots.length; i++) {
             const dot = gridDots[i];
             const distFromCenter = Math.sqrt(Math.pow(dot.baseX - centerX, 2) + Math.pow(dot.baseY - centerY, 2));
@@ -199,7 +242,7 @@ function initBackground() {
             let opacity = baseOpacity;
             let offsetX = 0;
             let offsetY = 0;
-            
+
             if (mouse.x !== null && mouse.y !== null) {
                 const dx = dot.baseX - mouse.x;
                 const dy = dot.baseY - mouse.y;
@@ -214,10 +257,10 @@ function initBackground() {
                     opacity = Math.min(1, opacity + force * 0.7);
                 }
             }
-            
+
             dot.x += ((dot.baseX + offsetX) - dot.x) * 0.2;
             dot.y += ((dot.baseY + offsetY) - dot.y) * 0.2;
-            
+
             if (opacity > 0.02 && size > 0.3) {
                 ctx.beginPath();
                 ctx.arc(dot.x, dot.y, Math.max(0.5, size), 0, Math.PI * 2);
@@ -235,7 +278,7 @@ function initBackground() {
         ctx.shadowColor = themeColor;
         ctx.shadowBlur = 15;
         ctx.globalAlpha = 0.55;
-        
+
         shapes.forEach(function(shape) {
             shape.rx += shape.speedX;
             shape.ry += shape.speedY;
@@ -248,7 +291,7 @@ function initBackground() {
             if (shape.baseY < 0.05 || shape.baseY > 0.95) { shape.vy *= -1; shape.baseY = Math.max(0.05, Math.min(0.95, shape.baseY)); }
             shape.x = shape.baseX + driftX;
             shape.y = shape.baseY + driftY;
-            
+
             let verts, edges;
             if (shape.type === 'controller') { verts = controllerVerts; edges = controllerEdges; }
             else if (shape.type === 'codetag') { verts = codetagVerts; edges = codetagEdges; }
@@ -256,7 +299,7 @@ function initBackground() {
             else if (shape.type === 'terminal') { verts = terminalVerts; edges = terminalEdges; }
             else if (shape.type === 'potion') { verts = potionVerts; edges = potionEdges; }
             if (!verts || !edges) return;
-            
+
             ctx.beginPath();
             edges.forEach(function(edge) {
                 const p1 = rotatePoint(verts[edge[0]], shape.rx, shape.ry);
@@ -307,7 +350,7 @@ function updateTheme(section) {
         statusBadge.style.borderColor = themeColor + '60';
         statusBadge.style.boxShadow = '0 0 15px ' + themeColor + '20';
     }
-    
+
     const heroAccent = document.getElementById('hero-accent');
     if (heroAccent) {
         heroAccent.style.color = themeColor;
@@ -316,7 +359,7 @@ function updateTheme(section) {
 
     const pingElements = document.querySelectorAll('#status-badge .animate-ping');
     pingElements.forEach(function(el) { el.style.backgroundColor = themeColor; });
-    
+
     const pingDot = document.querySelector('#status-badge .relative.inline-flex');
     if (pingDot) { pingDot.style.backgroundColor = themeColor; }
 
@@ -333,22 +376,22 @@ function updateDynamicColors() {
             else { icon.style.color = ''; }
         }
     });
-    
+
     const mapPinIcon = document.querySelector('[data-lucide="map-pin"]');
     if (mapPinIcon) { mapPinIcon.style.color = themeColor; }
-    
+
     const avatarRing = document.getElementById('avatar-ring');
     if (avatarRing) {
         avatarRing.style.borderColor = themeColor;
         avatarRing.style.boxShadow = '0 0 20px ' + themeColor + '40';
     }
-    
+
     const ctaPrimary = document.getElementById('cta-primary');
     if (ctaPrimary) {
         ctaPrimary.style.backgroundColor = themeColor;
         ctaPrimary.style.boxShadow = '0 0 30px ' + themeColor + '66';
     }
-    
+
     const sidebarGlow = document.getElementById('sidebar-glow');
     if (sidebarGlow) {
         sidebarGlow.style.background = 'linear-gradient(to right, transparent, ' + themeColor + ', transparent)';
@@ -383,11 +426,11 @@ function getHoverIcon(iconType) {
 function renderGames() {
     const grid = document.getElementById('games-grid');
     if (!grid) return;
-    
+
     const highlightedGames = gamesShowcase.highlighted ? gamesShowcase.highlighted.filter(function(g) { return g.visible !== false; }) : [];
-    
+
     if (highlightedGames.length === 0) return;
-    
+
     let html = '';
     highlightedGames.forEach(function(game, idx) {
         html += '<a href="' + game.link + '" target="_blank" class="game-card group relative ' + (idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video') + ' bg-black/60 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">' +
@@ -409,7 +452,7 @@ function renderGames() {
 function renderPortfolio(filter) {
     filter = filter || 'all';
     let items = portfolioItems;
-    
+
     // Apply filter
     if (filter === 'game') {
         items = items.filter(function(i) { return i.category.indexOf('game') !== -1; });
@@ -423,12 +466,12 @@ function renderPortfolio(filter) {
 
     const grid = document.getElementById('portfolio-grid');
     if (!grid) return;
-    
+
     let html = '';
     items.forEach(function(item) {
         const iconName = getHoverIcon(item.iconType);
         const targetAttr = (item.opennewtab !== false) ? 'target="_blank" rel="noopener noreferrer"' : '';
-        
+
         // Generate tags HTML
         let tagsHtml = '';
         if (item.tags && item.tags.length > 0) {
@@ -436,7 +479,7 @@ function renderPortfolio(filter) {
                 return '<span class="px-2 py-1 text-[8px] uppercase font-bold bg-black/80 text-white border border-white/10 shadow-[0_0_10px_black] backdrop-blur-sm">' + tag + '</span>';
             }).join('');
         }
-        
+
         html += '<a href="' + item.link + '" ' + targetAttr + ' class="project-card group relative block bg-[#13111c]/80 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">' +
             '<div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>' +
             '<div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">' +
@@ -466,7 +509,7 @@ function renderPortfolio(filter) {
 function renderExperience() {
     const list = document.getElementById('experience-list');
     if (!list || experience.length === 0) return;
-    
+
     let html = '';
     experience.forEach(function(job) {
         // Build positions HTML with responsibilities
@@ -480,7 +523,7 @@ function renderExperience() {
                 });
                 responsibilitiesHtml += '</ul>';
             }
-            
+
             positionsHtml += '<div class="exp-card bg-black/40 p-6 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden mb-4">' +
                 '<div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3">' +
                     '<h4 class="exp-title text-xl font-bold text-white transition-colors">' + pos.title + '</h4>' +
@@ -489,12 +532,12 @@ function renderExperience() {
                 responsibilitiesHtml +
             '</div>';
         });
-        
+
         // Company logo
-        const logoHtml = (job.logo && job.url) 
+        const logoHtml = (job.logo && job.url)
             ? '<a href="' + job.url + '" target="_blank" class="shrink-0"><img src="' + job.logo + '" alt="' + job.company + ' logo" class="w-12 h-12 rounded-lg bg-white/10 p-1 object-contain hover:scale-110 transition-transform"></a>'
             : '';
-        
+
         html += '<div class="relative pl-8 group">' +
             '<div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>' +
             '<div class="flex items-center gap-4 mb-4">' +
@@ -513,7 +556,7 @@ function renderExperience() {
 function renderEducation() {
     const grid = document.getElementById('education-grid');
     if (!grid || education.length === 0) return;
-    
+
     let html = '';
     education.forEach(function(edu) {
         // Build degrees HTML
@@ -527,15 +570,15 @@ function renderEducation() {
                 '</div>';
             });
         }
-        
+
         // Logo HTML
-        const logoHtml = edu.logo 
+        const logoHtml = edu.logo
             ? '<img src="' + edu.logo + '" alt="' + edu.institution + ' logo" class="w-10 h-10 rounded-lg bg-white/10 p-1 object-contain">'
             : '<i data-lucide="graduation-cap" class="w-8 h-8"></i>';
-        
+
         const clickableClass = edu.url ? 'cursor-pointer hover:scale-[1.02]' : '';
         const onClickAttr = edu.url ? 'onclick="window.open(\'' + edu.url + '\', \'_blank\')"' : '';
-        
+
         html += '<div class="edu-card group p-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ' + clickableClass + '" ' + onClickAttr + '>' +
             '<div class="flex items-start gap-4 mb-4">' +
                 '<div class="edu-icon transition-colors duration-300 p-2 bg-white/5 rounded-lg" style="color: var(--theme-color)">' +
@@ -555,43 +598,66 @@ function renderEducation() {
 
 function renderMore() {
     if (!siteConfig) return;
-    
+
     // Update Spotify embed
     const spotifyEmbed = document.getElementById('spotify-embed');
     if (spotifyEmbed && siteConfig.external && siteConfig.external.spotifyArtistId) {
         const spotifyUrl = 'https://open.spotify.com/embed/artist/' + siteConfig.external.spotifyArtistId + '?utm_source=generator&theme=0';
         spotifyEmbed.src = spotifyUrl;
     }
-    
-    // Update Steam stats
+
+    // Update Steam stats and profile link
     const steamStats = document.getElementById('steam-stats');
-    if (steamStats && siteConfig.external && siteConfig.external.steamUsername) {
-        const steamUrl = 'https://steam-stat.vercel.app/api?profileName=' + siteConfig.external.steamUsername;
-        steamStats.src = steamUrl;
+    const steamProfileLink = document.getElementById('steam-profile-link');
+    if (siteConfig.external && siteConfig.external.steamUsername) {
+        const steamUsername = siteConfig.external.steamUsername;
+        
+        // Set profile link
+        if (steamProfileLink) {
+            steamProfileLink.href = 'https://steamcommunity.com/id/' + steamUsername;
+        }
+        
+        // Try steam-stat.vercel.app service
+        if (steamStats) {
+            const steamUrl = 'https://steam-stat.vercel.app/api?profileName=' + steamUsername;
+            steamStats.src = steamUrl;
+        }
     }
-    
-    // Update GitHub stats
-    const githubStats = document.getElementById('github-stats');
-    if (githubStats && siteConfig.external && siteConfig.external.githubUsername) {
-        const githubUrl = 'http://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=' + siteConfig.external.githubUsername + '&theme=material_palenight';
-        githubStats.src = githubUrl;
+
+    // Update GitHub stats with HTTPS and multiple cards
+    if (siteConfig.external && siteConfig.external.githubUsername) {
+        const githubUsername = siteConfig.external.githubUsername;
+        
+        // GitHub Stats Card
+        const githubStats = document.getElementById('github-stats');
+        if (githubStats) {
+            const statsUrl = 'https://github-readme-stats.vercel.app/api?username=' + githubUsername + '&show_icons=true&theme=github_dark&hide_border=true&bg_color=0d1117';
+            githubStats.src = statsUrl;
+        }
+        
+        // GitHub Streak Card
+        const githubStreak = document.getElementById('github-streak');
+        if (githubStreak) {
+            const streakUrl = 'https://github-readme-streak-stats.herokuapp.com/?user=' + githubUsername + '&theme=github-dark-blue&hide_border=true&background=0d1117';
+            githubStreak.src = streakUrl;
+        }
     }
-    
+
     // Update Instagram
     if (instagram) {
         const instaAvatar = document.getElementById('insta-avatar');
         const instaUsername = document.getElementById('insta-username');
         const instaGrid = document.getElementById('insta-grid');
-        
+
         if (instaAvatar && instagram.profileImage) {
             instaAvatar.src = instagram.profileImage;
         }
-        
+
         if (instaUsername && instagram.profileUrl && instagram.username) {
             instaUsername.href = instagram.profileUrl;
             instaUsername.textContent = '@' + instagram.username;
         }
-        
+
         if (instaGrid && instagram.posts && instagram.posts.length > 0) {
             let instaHtml = '';
             instagram.posts.forEach(function(post) {
@@ -607,17 +673,17 @@ function renderMore() {
 function setupCVLocalization() {
     const cvLink = document.getElementById('cv-download-link');
     const cvLinkExp = document.getElementById('cv-download-link-exp');
-    
+
     if (!siteConfig || !siteConfig.cv) return;
-    
+
     const userInTurkey = function() {
         const lang = (navigator.language || '').toLowerCase();
         const tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').toLowerCase();
         return lang.startsWith('tr') || tz.includes('istanbul');
     };
-    
+
     const cvUrl = userInTurkey() ? siteConfig.cv.turkey : siteConfig.cv.default;
-    
+
     if (cvLink) {
         cvLink.href = cvUrl;
     }
@@ -722,7 +788,7 @@ async function init() {
     initEventListeners();
     updateTheme('portfolio'); // Default section
     updateFilterStyles(); // Apply highlighted filter style
-    
+
     // Scroll to portfolio section on load
     setTimeout(function() {
         const portfolioSection = document.getElementById('portfolio');
