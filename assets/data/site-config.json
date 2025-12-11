@@ -1,8 +1,8 @@
 {
   "versions": {
-    "css": "2.2.9",
-    "js": "2.2.9",
-    "data": "2.2.9"
+    "css": "3.0.0",
+    "js": "3.0.0",
+    "data": "3.0.0"
   },
   "personal": {
     "name": "Kenan EGE",
@@ -15,7 +15,8 @@
     ],
     "location": "Warsaw, PL",
     "about": {
-      "greeting": "GAME <span id='hero-accent'>DEV</span> <br/> KENAN",
+      "greeting": "HELLO THERE <span id='hero-accent'>!</span>",
+      "backup": "Game<span id='hero-accent'>DEV</span> <br/> KENAN",
       "description": "I'm a <strong>computer engineer</strong> and <strong>game developer</strong> currently based in <strong>Warsaw</strong>. I have a passion for building strange worlds and the sturdy code that supports them. Whether it's a reliable <strong>backend system</strong> or a game mechanic that lets you play as a destructive cat, I love the process of creation."
     }
   },
