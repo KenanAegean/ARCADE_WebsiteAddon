@@ -75,21 +75,48 @@
                         <span class="relative z-10">Stats</span>
                         <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
                     </a>
+                    <a href="#more" class="nav-item flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-300 group text-sm font-bold uppercase tracking-wider relative overflow-hidden text-gray-500 hover:text-white" data-section="more">
+                        <div class="nav-bg absolute inset-0 opacity-10 transition-transform duration-300 origin-left scale-x-0 group-hover:scale-x-100" style="background-color: var(--theme-color)"></div>
+                        <i data-lucide="sparkles" class="nav-icon w-[18px] h-[18px] relative z-10 transition-colors duration-300"></i>
+                        <span class="relative z-10">More</span>
+                        <i data-lucide="chevron-right" class="nav-chevron w-[14px] h-[14px] ml-auto relative z-10 animate-pulse hidden" style="color: var(--theme-color)"></i>
+                    </a>
                 </nav>
 
-                <div class="mt-auto pt-6 border-t border-white/5 flex justify-center gap-4 relative z-10">
-                    <a href="https://github.com/KenanAegean" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Github">
-                        <i data-lucide="github" class="w-5 h-5"></i>
+                <div class="mt-auto pt-6 border-t border-white/5 relative z-10">
+                    <!-- CV Download Button -->
+                    <a href="#" id="cv-download-link" download class="flex items-center justify-center gap-2 w-full mb-4 px-4 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105" style="background-color: var(--theme-color); color: black; box-shadow: 0 0 20px var(--theme-color);">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        Download CV
                     </a>
-                    <a href="https://www.linkedin.com/in/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="LinkedIn">
-                        <i data-lucide="linkedin" class="w-5 h-5"></i>
-                    </a>
-                    <a href="https://www.instagram.com/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Instagram">
-                        <i data-lucide="instagram" class="w-5 h-5"></i>
-                    </a>
-                    <a href="https://www.youtube.com/channel/UCds6Gb5gvdc6_zyXa8u5e0w" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="YouTube">
-                        <i data-lucide="youtube" class="w-5 h-5"></i>
-                    </a>
+                    
+                    <!-- Social Links -->
+                    <div class="flex flex-wrap justify-center gap-2">
+                        <a href="https://github.com/KenanAegean" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="GitHub">
+                            <i data-lucide="github" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="LinkedIn">
+                            <i data-lucide="linkedin" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.instagram.com/kenanege/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Instagram">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCds6Gb5gvdc6_zyXa8u5e0w" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="YouTube">
+                            <i data-lucide="youtube" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://open.spotify.com/intl-tr/artist/2CMjhwFMDeusyTCoKcTNL8" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Spotify">
+                            <i data-lucide="music" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://soundcloud.com/kenan-ege" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="SoundCloud">
+                            <i data-lucide="headphones" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://steamcommunity.com/id/ZoneBee/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Steam">
+                            <i data-lucide="monitor" class="w-5 h-5"></i>
+                        </a>
+                        <a href="https://kenanege.itch.io/" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="Itch.io">
+                            <i data-lucide="gamepad-2" class="w-5 h-5"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -155,6 +182,7 @@
                         
                         <div id="filters" class="flex flex-wrap gap-2">
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm" data-filter="all">All</button>
+                            <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="highlighted">Highlighted</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="game">Games</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="web">Web</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="app">Apps</button>
@@ -165,20 +193,29 @@
                 </section>
 
                 <section id="experience">
-                    <div class="mb-12 relative z-10 text-left section-backdrop">
-                        <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #ffd700; text-shadow: 0 0 10px #ffd700;">
-                            <span class="w-8 h-[2px] bg-current opacity-70"></span>
-                            History
-                        </h3>
-                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block font-archivo text-readable">
-                            Career Log
-                        </h2>
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                        <div class="relative z-10 text-left section-backdrop">
+                            <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #ffd700; text-shadow: 0 0 10px #ffd700;">
+                                <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                                History
+                            </h3>
+                            <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block font-archivo text-readable">
+                                Career Log
+                            </h2>
+                        </div>
+                        
+                        <!-- CV Download Button -->
+                        <a href="#" id="cv-download-link-exp" download class="flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider transition-all duration-300 hover:scale-105 border-2 group" style="border-color: #ffd700; color: #ffd700;">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                            <span>Download CV</span>
+                            <i data-lucide="download" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+                        </a>
                     </div>
                     
                     <div id="experience-list" class="space-y-12 pl-4 border-l-2 border-white/10 relative ml-2"></div>
                 </section>
                  
-                <section id="education" class="pb-32">
+                <section id="education" class="pb-16">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
                         <h3 id="education-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #0051ff; text-shadow: 0 0 10px #0051ff;">
                             <span class="w-8 h-[2px] bg-current opacity-70"></span>
@@ -191,9 +228,79 @@
                     <div id="education-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
                 </section>
 
+                <!-- More Section -->
+                <section id="more" class="pb-32">
+                    <div class="mb-12 relative z-10 text-left section-backdrop">
+                        <h3 id="more-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #39ff14; text-shadow: 0 0 10px #39ff14;">
+                            <span class="w-8 h-[2px] bg-current opacity-70"></span>
+                            Extras
+                        </h3>
+                        <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white leading-none relative inline-block font-archivo text-readable">
+                            More
+                        </h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Spotify Section -->
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg bg-[#1DB954]/20">
+                                    <i data-lucide="music" class="w-6 h-6 text-[#1DB954]"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white">My Music</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm mb-4 font-mono">Listen to my tracks on Spotify</p>
+                            <iframe id="spotify-embed" style="border-radius:12px" src="" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        </div>
+                        
+                        <!-- Steam Stats Section -->
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg bg-[#1b2838]/50">
+                                    <i data-lucide="monitor" class="w-6 h-6 text-[#66c0f4]"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white">Steam Stats</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm mb-4 font-mono">Gaming activity overview</p>
+                            <div class="bg-[#1b2838] rounded-xl p-2">
+                                <img id="steam-stats" src="" alt="Steam Stats" class="w-full rounded-lg" onerror="this.parentElement.innerHTML='<p class=\'text-gray-500 text-center py-8\'>Steam stats unavailable</p>'">
+                            </div>
+                        </div>
+                        
+                        <!-- GitHub Stats Section -->
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg bg-white/10">
+                                    <i data-lucide="github" class="w-6 h-6 text-white"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white">GitHub Activity</h3>
+                            </div>
+                            <p class="text-gray-400 text-sm mb-4 font-mono">Contribution overview</p>
+                            <div class="bg-[#0d1117] rounded-xl p-2">
+                                <img id="github-stats" src="" alt="GitHub Stats" class="w-full rounded-lg" onerror="this.parentElement.innerHTML='<p class=\'text-gray-500 text-center py-8\'>GitHub stats unavailable</p>'">
+                            </div>
+                        </div>
+                        
+                        <!-- Instagram Section -->
+                        <div class="bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="p-2 rounded-lg bg-gradient-to-br from-[#833AB4]/30 via-[#FD1D1D]/30 to-[#F77737]/30">
+                                    <i data-lucide="instagram" class="w-6 h-6 text-[#E1306C]"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-white">Instagram</h3>
+                            </div>
+                            <div class="flex items-center gap-3 mb-4">
+                                <img id="insta-avatar" src="" alt="Instagram Avatar" class="w-12 h-12 rounded-full border-2 border-[#E1306C] object-cover">
+                                <a id="insta-username" href="#" target="_blank" class="text-sm font-mono text-[#E1306C] hover:underline">@kenanege</a>
+                            </div>
+                            <div id="insta-grid" class="grid grid-cols-2 gap-2"></div>
+                        </div>
+                    </div>
+                </section>
+
                 <footer class="text-center text-gray-600 text-xs font-mono py-12 border-t border-white/5 bg-black/50 backdrop-blur-xl">
                     <p>SYSTEM REBOOT COMPLETE.</p>
-                    <p class="mt-2">© 2025 Kenan Ege.</p>
+                    <p class="mt-2">Â© 2025 Kenan Ege.</p>
                 </footer>
 
             </div>
