@@ -1,18 +1,32 @@
 :root {
-    --theme-color: #bc13fe; /* Default theme color - purple for portfolio section */
+    --theme-color: #bc13fe;
 }
 
-html, body {
+html {
+    /* This scales the entire website down by ~8% safely */
+    /* Tailwind uses 'rem' units, so changing root font-size scales everything */
+    font-size: 92%; 
+    
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
-    position: relative; /* Ensures proper stacking context */
+    height: 100%; /* Ensure full height */
 }
 
 body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 100vh;
+    
     font-family: 'Chakra Petch', sans-serif;
-    background: #020005;
+    /* Darker Background */
+    background: #000000; 
+    
+    /* Removed 'transform' and 'zoom' to fix the broken sidebar */
 }
+
 .font-archivo { font-family: 'Archivo Black', sans-serif; }
 .font-mono { font-family: 'Space Mono', monospace; }
 
@@ -21,9 +35,10 @@ body {
     color: black;
 }
 
+/* Darker Scrollbar */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #0a001a; }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-track { background: #05000a; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--theme-color, #00f3ff); }
 
 .line-clamp-2 {
@@ -73,7 +88,6 @@ body {
 .exp-card:hover { background: rgba(255,255,255,0.05); }
 .exp-card:hover .exp-title { color: var(--theme-color); }
 
-/* Filter button default styles */
 .filter-btn {
     background-color: transparent;
     border-color: rgba(255,255,255,0.2);
@@ -84,10 +98,10 @@ body {
     color: white;
 }
 
-/* Text readability improvements */
 .text-readable {
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8), 0 4px 20px rgba(0,0,0,0.6);
+    text-shadow: 0 2px 5px rgba(0,0,0,0.9), 0 4px 10px rgba(0,0,0,0.8);
 }
+
 .section-backdrop {
     position: relative;
 }
@@ -98,7 +112,8 @@ body {
     left: -60px;
     right: 40%;
     bottom: -40px;
-    background: radial-gradient(ellipse at left, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, transparent 80%);
+    /* Darker, subtler backdrop */
+    background: radial-gradient(ellipse at left, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 50%, transparent 80%);
     pointer-events: none;
     z-index: -1;
     border-radius: 30px;

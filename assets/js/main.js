@@ -41,7 +41,6 @@ async function fetchJSON(filename, params = null) {
 async function loadData() {
     try {
         // 1. Fetch site-config.json FIRST with a timestamp to bust cache.
-        // This ensures we always get the latest version numbers.
         const siteConfigData = await fetchJSON('site-config.json', 't=' + new Date().getTime());
         
         if (!siteConfigData) {
@@ -100,73 +99,6 @@ async function loadData() {
         };
         themes = siteConfig?.themes || defaultThemes;
 
-        // Determine default section
-        const defaultNav = navigation.find(n => n.default) || navigation[0];
-        if (defaultNav) {
-            currentSection = defaultNav.section;
-            themeColor = themes[currentSection]?.hex || '#bc13fe';
-        }
-
-        dataLoaded = true;
-        console.log('All Data Loaded Successfully');
-        return true;
-    } catch (error) {
-        console.error('Error loading data:', error);
-        dataLoaded = false;
-        return false;
-    }
-}
-
-async function loadData() {
-    try {
-        const [
-            siteConfigData,
-            portfolioItemsData,
-            experienceData,
-            educationData,
-            gamesShowcaseData,
-            socialLinksData,
-            footerData,
-            instagramData,
-            projectDetailsData,
-            navigationData
-        ] = await Promise.all([
-            fetchJSON('site-config.json'),
-            fetchJSON('portfolio-items.json'),
-            fetchJSON('experience.json'),
-            fetchJSON('education.json'),
-            fetchJSON('games-showcase.json'),
-            fetchJSON('social-links.json'),
-            fetchJSON('footer.json'),
-            fetchJSON('instagram.json'),
-            fetchJSON('project-details.json'),
-            fetchJSON('navigation.json')
-        ]);
-
-        siteConfig = siteConfigData || null;
-        portfolioItems = (portfolioItemsData || []).filter(item => item.visible !== false);
-        experience = experienceData || [];
-        education = educationData || [];
-        gamesShowcase = gamesShowcaseData || { highlighted: [], inDevelopment: [] };
-        socialLinks = socialLinksData || []; 
-        footerConfig = footerData || null;
-        instagram = instagramData || null;
-        projectDetails = projectDetailsData || {};
-        // Sort navigation by order
-        navigation = (navigationData || []).filter(item => item.visible !== false).sort((a, b) => a.order - b.order);
-
-        // Theme colors configuration
-        const defaultThemes = {
-            about: { hex: '#00f3ff' },
-            games: { hex: '#ff0055' },
-            portfolio: { hex: '#bc13fe' },
-            experience: { hex: '#ffd700' },
-            education: { hex: '#0051ff' },
-            more: { hex: '#39ff14' }
-        };
-        themes = siteConfig?.themes || defaultThemes;
-
-        // Determine default section
         const defaultNav = navigation.find(n => n.default) || navigation[0];
         if (defaultNav) {
             currentSection = defaultNav.section;
@@ -360,7 +292,7 @@ function initBackground() {
         ctx.strokeStyle = themeColor;
         ctx.lineWidth = 1.5;
         ctx.shadowColor = themeColor;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 10; // REDUCED GLOW from 15
         ctx.globalAlpha = 0.55;
 
         shapes.forEach(function(shape) {
@@ -431,7 +363,6 @@ function renderNavigation() {
 
 function renderSidebarSocials() {
     const container = document.getElementById('sidebar-socials');
-    // Prioritize footer.json social links, fallback to legacy social-links.json if needed
     const links = (footerConfig && footerConfig.social && footerConfig.social.links) ? footerConfig.social.links : socialLinks;
     
     if (!container || !links) return;
@@ -447,7 +378,7 @@ function renderSidebarSocials() {
     container.innerHTML = html;
 }
 
-// Variable to store the timeout ID so we don't create duplicate loops
+// Variable to store the timeout ID
 let titleTypeTimeout = null;
 
 function renderPersonal() {
@@ -462,35 +393,25 @@ function renderPersonal() {
     const sidebarTitle = document.querySelector('#sidebar h1');
     if (sidebarTitle) sidebarTitle.textContent = personal.name;
 
-    // --- NEW LOGIC: Typewriter Effect ---
+    // --- Typewriter Effect ---
     const titleContainer = document.querySelector('#sidebar .flex.flex-wrap');
     
     if (titleContainer && personal.titles && personal.titles.length > 0) {
-        // 1. Clear existing static badges
         titleContainer.innerHTML = '';
-        
-        // 2. Create the container wrapper (to maintain layout)
         const wrapper = document.createElement('div');
         wrapper.className = 'px-3 py-1.5 rounded bg-white/5 border border-white/10 inline-flex items-center justify-center min-w-[200px] min-h-[32px]';
-        
-        // 3. Create text element
         const typeText = document.createElement('span');
         typeText.className = 'text-[11px] font-mono text-gray-300 whitespace-nowrap';
-        
-        // 4. Create blinking cursor
         const cursor = document.createElement('span');
         cursor.textContent = '|';
         cursor.className = 'ml-1 animate-pulse text-[11px]';
         cursor.style.color = 'var(--theme-color)';
-        
         wrapper.appendChild(typeText);
         wrapper.appendChild(cursor);
         titleContainer.appendChild(wrapper);
 
-        // 5. Clear previous timer if exists
         if (titleTypeTimeout) clearTimeout(titleTypeTimeout);
 
-        // 6. Typewriter Variables
         let loopNum = 0;
         let isDeleting = false;
         let charIndex = 0;
@@ -498,39 +419,31 @@ function renderPersonal() {
 
         function type() {
             const i = loopNum % personal.titles.length;
-            // Use Array.from to handle emojis correctly (treats 🎸 as 1 char)
             const fullTxtArray = Array.from(personal.titles[i]);
 
             if (isDeleting) {
                 charIndex--;
-                typeSpeed = 50; // Delete faster
+                typeSpeed = 50; 
             } else {
                 charIndex++;
-                typeSpeed = 100; // Type normal
+                typeSpeed = 100; 
             }
 
-            // Update text
             typeText.textContent = fullTxtArray.slice(0, charIndex).join('');
 
-            // Logic for switching states
             if (!isDeleting && charIndex === fullTxtArray.length) {
-                // Finished typing word
-                typeSpeed = 2000; // Pause at end
+                typeSpeed = 2000; 
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
-                // Finished deleting
                 isDeleting = false;
                 loopNum++;
-                typeSpeed = 500; // Pause before next word
+                typeSpeed = 500; 
             }
 
             titleTypeTimeout = setTimeout(type, typeSpeed);
         }
-
-        // Start the loop
         type();
     }
-    // ----------------------------------------
     
     // Update Hero Section
     if (personal.about) {
@@ -540,7 +453,7 @@ function renderPersonal() {
         if (heroDesc) heroDesc.innerHTML = personal.about.description;
     }
 
-    // Update Hero Buttons
+    // Update Hero Buttons - REDUCED GLOW HERE
     if (siteConfig.overview_buttons) {
         const btnContainer = document.getElementById('hero-buttons');
         if (btnContainer) {
@@ -549,7 +462,8 @@ function renderPersonal() {
                 if (btn.visible === false) return;
                 
                 if (btn.style === 'primary') {
-                    btnsHtml += `<a href="${btn.href}" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1" style="background-color: var(--theme-color); box-shadow: 0 0 30px var(--theme-color);">${btn.label}</a>`;
+                    // Reduced shadow from 30px to 10px
+                    btnsHtml += `<a href="${btn.href}" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1" style="background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color);">${btn.label}</a>`;
                 } else {
                     btnsHtml += `<a href="${btn.href}" class="px-8 py-4 border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded hover:bg-white/10 hover:border-white transition-colors backdrop-blur-sm">${btn.label}</a>`;
                 }
@@ -600,14 +514,15 @@ function renderGames() {
     if (highlightedGames.length === 0) return;
 
     let html = '';
+    // Reduced text shadow here
     highlightedGames.forEach((game, idx) => {
-        html += `<a href="${game.link}" target="_blank" class="game-card group relative ${idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video'} bg-black/60 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+        html += `<a href="${game.link}" target="_blank" class="game-card group relative ${idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video'} bg-black/80 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
             <div class="game-border absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-xl z-20 pointer-events-none"></div>
             <div class="game-bg absolute inset-0 bg-cover bg-center opacity-60 transition-all duration-700" style="background-image: url(${game.image})"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
             <div class="absolute bottom-0 left-0 p-6 z-10">
-                <h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-lg">${game.title}</h3>
-                <div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color)">
+                <h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-md">${game.title}</h3>
+                <div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 5px var(--theme-color)">
                     <i data-lucide="gamepad-2" class="w-4 h-4"></i> Click to Play
                 </div>
             </div>
@@ -620,12 +535,9 @@ function renderPortfolio(filter) {
     filter = filter || 'all';
     let items = portfolioItems;
 
-    // Apply filters
     if (filter === 'game') items = items.filter(i => i.category.includes('game'));
     else if (filter === 'web') items = items.filter(i => i.category.includes('web'));
-    // New Logic for Android (checks for "mobile" in category)
     else if (filter === 'android') items = items.filter(i => i.category.includes('mobile'));
-    // New Logic for Windows
     else if (filter === 'windows') items = items.filter(i => i.category.includes('windows'));
     else if (filter === 'other') items = items.filter(i => i.category.includes('other'));
     else if (filter === 'highlighted') items = items.filter(i => i.highlighted === true);
@@ -638,26 +550,26 @@ function renderPortfolio(filter) {
         const iconName = getHoverIcon(item.iconType);
         const targetAttr = (item.opennewtab !== false) ? 'target="_blank" rel="noopener noreferrer"' : '';
 
-        // Generate tags HTML
         let tagsHtml = '';
         if (item.tags && item.tags.length > 0) {
             tagsHtml = item.tags.slice(0, 3).map((tag, index) => {
                 let styleAttr = '';
-                let tagClass = "bg-black/80 text-white border-white/10";
+                let tagClass = "bg-black/90 text-white border-white/10"; // Darker tag bg
                 
-                // Highlight the 3rd tag (index 2)
                 if (index === 2) {
                     tagClass = "text-black font-bold border-transparent";
-                    styleAttr = `style="background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color);"`;
+                    // Reduced shadow from 10px to 5px
+                    styleAttr = `style="background-color: var(--theme-color); box-shadow: 0 0 5px var(--theme-color);"`;
                 }
 
-                return `<span class="px-2 py-1 text-[8px] uppercase font-bold border shadow-[0_0_10px_black] backdrop-blur-sm ${tagClass}" ${styleAttr}>${tag}</span>`;
+                return `<span class="px-2 py-1 text-[8px] uppercase font-bold border shadow-[0_0_5px_black] backdrop-blur-sm ${tagClass}" ${styleAttr}>${tag}</span>`;
             }).join('');
         }
 
-        html += `<a href="${item.link}" ${targetAttr} class="project-card group relative block bg-[#13111c]/80 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">
+        // Updated Card Background to be darker: bg-[#050505]/90
+        html += `<a href="${item.link}" ${targetAttr} class="project-card group relative block bg-[#050505]/90 backdrop-blur-md border border-white/10 rounded-lg h-full flex flex-col overflow-hidden transition-all duration-300">
             <div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>
-            <div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">
+            <div class="aspect-video w-full bg-[#050505] relative overflow-hidden border-b border-white/5">
                 <img src="${item.image}" alt="${item.title}" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
                 <div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">
                     <i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>
@@ -679,7 +591,6 @@ function renderPortfolio(filter) {
     });
     grid.innerHTML = html;
     
-    // Re-initialize icons
     if(window.lucide) lucide.createIcons();
 }
 
@@ -700,7 +611,8 @@ function renderExperience() {
                 responsibilitiesHtml += `</ul>`;
             }
 
-            positionsHtml += `<div class="exp-card bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 transition-all duration-300 relative overflow-hidden mb-4">
+            // Darker BG: bg-black/70
+            positionsHtml += `<div class="exp-card bg-black/70 backdrop-blur-md p-6 rounded-xl border border-white/10 transition-all duration-300 relative overflow-hidden mb-4">
                 <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-3">
                     <h4 class="exp-title text-xl font-bold text-white transition-colors">${pos.title}</h4>
                     <span class="text-xs font-mono text-gray-400 bg-black/50 px-3 py-1 rounded border border-white/10 mt-2 md:mt-0">${pos.startDate} — ${pos.endDate}</span>
@@ -709,13 +621,13 @@ function renderExperience() {
             </div>`;
         });
 
-        // UPDATED LOGO HTML: Added glass effect (bg-black/40, backdrop-blur, border) to the container
+        // Reduced Shadow on dot
         const logoHtml = (job.logo && job.url)
-            ? `<a href="${job.url}" target="_blank" class="shrink-0 p-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl hover:scale-105 transition-transform"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 object-contain"></a>`
+            ? `<a href="${job.url}" target="_blank" class="shrink-0 p-2 bg-black/70 backdrop-blur-md border border-white/10 rounded-xl hover:scale-105 transition-transform"><img src="${job.logo}" alt="${job.company} logo" class="w-12 h-12 object-contain"></a>`
             : '';
 
         html += `<div class="relative pl-8 group">
-            <div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>
+            <div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 5px var(--theme-color)"></div>
             <div class="flex items-center gap-4 mb-4">
                 ${logoHtml}
                 <div>
@@ -753,7 +665,8 @@ function renderEducation() {
         const clickableClass = edu.url ? 'cursor-pointer hover:scale-[1.02]' : '';
         const onClickAttr = edu.url ? `onclick="window.open('${edu.url}', '_blank')"` : '';
 
-        html += `<div class="edu-card group p-6 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ${clickableClass}" ${onClickAttr}>
+        // Darker BG: bg-black/70
+        html += `<div class="edu-card group p-6 bg-black/70 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300 ${clickableClass}" ${onClickAttr}>
             <div class="flex items-start gap-4 mb-4">
                 <div class="edu-icon transition-colors duration-300 p-2 bg-white/5 rounded-lg" style="color: var(--theme-color)">
                     ${logoHtml}
@@ -824,7 +737,6 @@ function renderMore() {
 
 function updateTheme(section) {
     currentSection = section;
-    // Ensure we have a valid color, defaulting to purple if not found
     themeColor = (themes[section] && themes[section].hex) ? themes[section].hex : '#bc13fe';
     document.documentElement.style.setProperty('--theme-color', themeColor);
 
@@ -838,18 +750,15 @@ function updateTheme(section) {
             item.classList.add('active', 'text-white');
             item.classList.remove('text-gray-500');
             if (chevron) chevron.classList.remove('hidden');
-            // FIX: Set active color explicitly
             if (icon) icon.style.color = themeColor; 
         } else {
             item.classList.remove('active', 'text-white');
             item.classList.add('text-gray-500');
             if (chevron) chevron.classList.add('hidden');
-            // FIX: Clear color so it reverts to CSS class defaults
             if (icon) icon.style.color = ''; 
         }
     });
 
-    // Dynamic UI Updates
     updateDynamicColors();
     updateFilterStyles();
 }
@@ -869,14 +778,19 @@ function updateDynamicColors() {
         if (domEl) domEl.style[el.property] = el.value;
     });
 
-    // FIX: Apply Reduced Glow Effect (Text Shadow)
+    // REDUCED GLOW LOGIC
     const heroAccent = document.getElementById('hero-accent');
     if (heroAccent) {
-        // Reduced from 30px/60px to 15px/30px for a subtler effect
-        heroAccent.style.textShadow = `0 0 15px ${themeColor}, 0 0 30px ${themeColor}`;
+        // Reduced from 15px/30px to 10px/20px
+        heroAccent.style.textShadow = `0 0 10px ${themeColor}, 0 0 20px ${themeColor}`;
     }
     
-    // Icon colors in Nav
+    // Reduce avatar glow
+    const avatarRing = document.getElementById('avatar-ring');
+    if (avatarRing) {
+        avatarRing.style.boxShadow = `0 0 10px ${themeColor}`; // Reduced from 20px
+    }
+
     document.querySelectorAll('.nav-item.active .nav-icon').forEach(icon => {
         icon.style.color = themeColor;
     });
@@ -974,7 +888,6 @@ function initEventListeners() {
 async function init() {
     await loadData();
     
-    // 1. Render all dynamic sections
     renderNavigation();
     renderPersonal();
     renderSidebarSocials();
@@ -985,23 +898,18 @@ async function init() {
     renderMore();
     renderFooter();
     
-    // 2. Setup Logic & Events
     setupCVLocalization();
     initEventListeners();
     
-    // 3. Initialize Visuals
     lucide.createIcons();
     initBackground();
     
-    // 4. Set Initial Theme based on default nav item
     const defaultNav = navigation.find(n => n.default);
     const startSection = defaultNav ? defaultNav.section : 'portfolio';
     
-    // Force immediate update to set colors correctly
     updateTheme(startSection);
     updateFilterStyles();
 
-    // FIX: Scroll to default section
     setTimeout(() => {
         const el = document.getElementById(startSection);
         if(el) {
