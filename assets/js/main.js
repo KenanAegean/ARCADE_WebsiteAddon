@@ -929,19 +929,32 @@ function initEventListeners() {
         }
     });
 
+    // Find this block inside the initEventListeners() function
     document.getElementById('main-nav').addEventListener('click', function(e) {
         const link = e.target.closest('.nav-item');
         if (!link) return;
         e.preventDefault();
         const section = link.dataset.section;
         const el = document.getElementById(section);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        
+        // --- MODIFIED SECTION START ---
+        if (el) {
+            const offset = 40; // Adjust this value (in pixels) to change the gap size
+            const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+        // --- MODIFIED SECTION END ---
         
         document.getElementById('sidebar').classList.add('-translate-x-full');
         document.getElementById('menu-icon').classList.remove('hidden');
         document.getElementById('close-icon').classList.add('hidden');
     });
-
+    
     document.getElementById('mobile-toggle').addEventListener('click', function() {
         const sidebar = document.getElementById('sidebar');
         const isOpen = !sidebar.classList.contains('-translate-x-full');
@@ -985,8 +998,9 @@ async function init() {
     lucide.createIcons();
     initBackground();
     
+    const hash = window.location.hash.substring(1); // Remove '#'
     const defaultNav = navigation.find(n => n.default);
-    const startSection = defaultNav ? defaultNav.section : 'portfolio';
+    let startSection = (hash && document.getElementById(hash)) ? hash : (defaultNav ? defaultNav.section : 'portfolio');
     
     updateTheme(startSection);
     updateFilterStyles();
@@ -994,7 +1008,14 @@ async function init() {
     setTimeout(() => {
         const el = document.getElementById(startSection);
         if(el) {
-            el.scrollIntoView({ behavior: 'auto' });
+            const offset = 40; // Ensure this matches the gap size you set in the click listener
+            const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth' 
+            });
         }
     }, 100);
 }
