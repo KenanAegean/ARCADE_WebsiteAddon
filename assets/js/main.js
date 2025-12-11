@@ -859,8 +859,8 @@ function updateDynamicColors() {
     // REDUCED GLOW LOGIC
     const heroAccent = document.getElementById('hero-accent');
     if (heroAccent) {
-        // Reduced from 15px/30px to 10px/20px
-        heroAccent.style.textShadow = `0 0 10px ${themeColor}, 0 0 20px ${themeColor}`;
+        // Significantly reduced shadow for cleaner look, especially on mobile
+        heroAccent.style.textShadow = `0 0 8px ${themeColor}`;
     }
     
     // Reduce avatar glow
