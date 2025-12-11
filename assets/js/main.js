@@ -585,7 +585,10 @@ function renderGames() {
     let html = '';
     // Reduced text shadow here
     highlightedGames.forEach((game, idx) => {
-        html += `<a href="${game.link}" target="_blank" class="game-card group relative ${idx === 0 ? 'md:col-span-2 aspect-[21/9]' : 'aspect-video'} bg-black/80 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
+        // CHANGED: Use special classes only on desktop (md:), default to aspect-video for mobile
+        const sizeClass = idx === 0 ? 'aspect-video md:col-span-2 md:aspect-[21/9]' : 'aspect-video';
+        
+        html += `<a href="${game.link}" target="_blank" class="game-card group relative ${sizeClass} bg-black/80 border border-white/10 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl">
             <div class="game-border absolute inset-0 border-2 border-transparent transition-colors duration-300 rounded-xl z-20 pointer-events-none"></div>
             <div class="game-bg absolute inset-0 bg-cover bg-center opacity-60 transition-all duration-700" style="background-image: url(${game.image})"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>
