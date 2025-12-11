@@ -20,9 +20,14 @@ let dataLoaded = false;
 const DATA_PATH = './assets/data/';
 
 // ==================== DATA LOADING ====================
-async function fetchJSON(filename) {
+async function fetchJSON(filename, params = null) {
     try {
-        const response = await fetch(DATA_PATH + filename);
+        let url = DATA_PATH + filename;
+        if (params) {
+            url += '?' + params;
+        }
+        
+        const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Failed to load ' + filename);
         }
@@ -30,6 +35,85 @@ async function fetchJSON(filename) {
     } catch (error) {
         console.error('Error loading ' + filename + ':', error);
         return null;
+    }
+}
+
+async function loadData() {
+    try {
+        // 1. Fetch site-config.json FIRST with a timestamp to bust cache.
+        // This ensures we always get the latest version numbers.
+        const siteConfigData = await fetchJSON('site-config.json', 't=' + new Date().getTime());
+        
+        if (!siteConfigData) {
+            throw new Error('Critical: Could not load site-config.json');
+        }
+        
+        siteConfig = siteConfigData;
+        
+        // 2. Extract the data version to use for all other files
+        const dataVersion = siteConfig.versions && siteConfig.versions.data ? siteConfig.versions.data : '1.0';
+        const vParam = 'v=' + dataVersion;
+
+        console.log('Loading data with version:', dataVersion);
+
+        // 3. Fetch all other data files using the version from site-config
+        const [
+            portfolioItemsData,
+            experienceData,
+            educationData,
+            gamesShowcaseData,
+            socialLinksData,
+            footerData,
+            instagramData,
+            projectDetailsData,
+            navigationData
+        ] = await Promise.all([
+            fetchJSON('portfolio-items.json', vParam),
+            fetchJSON('experience.json', vParam),
+            fetchJSON('education.json', vParam),
+            fetchJSON('games-showcase.json', vParam),
+            fetchJSON('social-links.json', vParam),
+            fetchJSON('footer.json', vParam),
+            fetchJSON('instagram.json', vParam),
+            fetchJSON('project-details.json', vParam),
+            fetchJSON('navigation.json', vParam)
+        ]);
+
+        portfolioItems = (portfolioItemsData || []).filter(item => item.visible !== false);
+        experience = experienceData || [];
+        education = educationData || [];
+        gamesShowcase = gamesShowcaseData || { highlighted: [], inDevelopment: [] };
+        socialLinks = socialLinksData || []; 
+        footerConfig = footerData || null;
+        instagram = instagramData || null;
+        projectDetails = projectDetailsData || {};
+        navigation = (navigationData || []).filter(item => item.visible !== false).sort((a, b) => a.order - b.order);
+
+        // Theme colors configuration
+        const defaultThemes = {
+            about: { hex: '#00f3ff' },
+            games: { hex: '#ff0055' },
+            portfolio: { hex: '#bc13fe' },
+            experience: { hex: '#ffd700' },
+            education: { hex: '#0051ff' },
+            more: { hex: '#39ff14' }
+        };
+        themes = siteConfig?.themes || defaultThemes;
+
+        // Determine default section
+        const defaultNav = navigation.find(n => n.default) || navigation[0];
+        if (defaultNav) {
+            currentSection = defaultNav.section;
+            themeColor = themes[currentSection]?.hex || '#bc13fe';
+        }
+
+        dataLoaded = true;
+        console.log('All Data Loaded Successfully');
+        return true;
+    } catch (error) {
+        console.error('Error loading data:', error);
+        dataLoaded = false;
+        return false;
     }
 }
 
