@@ -13,8 +13,13 @@ let navigation = [];
 
 let currentSection = 'portfolio';
 let currentFilter = 'highlighted';
-let themeColor = '#bc13fe';
+let themeColor = '#bc13fe'; // Current Hex String
 let dataLoaded = false;
+
+// Animation State for Color Transition
+let currentThemeRgb = { r: 188, g: 19, b: 254 }; // Initial RGB
+let targetThemeRgb = { r: 188, g: 19, b: 254 };  // Target RGB
+let isTransitioningColor = false;
 
 // Base path for data files
 const DATA_PATH = './assets/data/';
@@ -102,7 +107,14 @@ async function loadData() {
         const defaultNav = navigation.find(n => n.default) || navigation[0];
         if (defaultNav) {
             currentSection = defaultNav.section;
-            themeColor = themes[currentSection]?.hex || '#bc13fe';
+            // Initialize colors immediately without transition for the first load
+            const startHex = themes[currentSection]?.hex || '#bc13fe';
+            themeColor = startHex;
+            const startRgb = hexToRgb(startHex);
+            if(startRgb) {
+                currentThemeRgb = startRgb;
+                targetThemeRgb = startRgb;
+            }
         }
 
         dataLoaded = true;
@@ -113,6 +125,63 @@ async function loadData() {
         dataLoaded = false;
         return false;
     }
+}
+
+// ==================== COLOR UTILITIES & ANIMATION ====================
+
+function hexToRgb(hex) {
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
+function lerp(start, end, t) {
+    return start * (1 - t) + end * t;
+}
+
+function processColorTransition() {
+    if (!isTransitioningColor) return;
+
+    // Transition speed (0.05 is smooth and slow)
+    const speed = 0.05; 
+    
+    // Check if close enough to snap to target
+    if (Math.abs(targetThemeRgb.r - currentThemeRgb.r) < 0.5 &&
+        Math.abs(targetThemeRgb.g - currentThemeRgb.g) < 0.5 &&
+        Math.abs(targetThemeRgb.b - currentThemeRgb.b) < 0.5) {
+        
+        currentThemeRgb = { ...targetThemeRgb };
+        isTransitioningColor = false;
+    } else {
+        currentThemeRgb.r = lerp(currentThemeRgb.r, targetThemeRgb.r, speed);
+        currentThemeRgb.g = lerp(currentThemeRgb.g, targetThemeRgb.g, speed);
+        currentThemeRgb.b = lerp(currentThemeRgb.b, targetThemeRgb.b, speed);
+        requestAnimationFrame(processColorTransition);
+    }
+
+    // Convert current RGB to Hex
+    const newHex = rgbToHex(Math.round(currentThemeRgb.r), Math.round(currentThemeRgb.g), Math.round(currentThemeRgb.b));
+    
+    // Update global variable
+    themeColor = newHex; 
+    
+    // Update CSS Variable
+    document.documentElement.style.setProperty('--theme-color', newHex);
+    
+    // Update elements that rely on JS values (gradients, active states)
+    updateDynamicColors();
+    updateFilterStyles();
 }
 
 // ==================== BACKGROUND ANIMATION (RESTORED) ====================
@@ -737,8 +806,17 @@ function renderMore() {
 
 function updateTheme(section) {
     currentSection = section;
-    themeColor = (themes[section] && themes[section].hex) ? themes[section].hex : '#bc13fe';
-    document.documentElement.style.setProperty('--theme-color', themeColor);
+    const targetHex = (themes[section] && themes[section].hex) ? themes[section].hex : '#bc13fe';
+    
+    // Parse new target and start transition
+    const target = hexToRgb(targetHex);
+    if(target) {
+        targetThemeRgb = target;
+        if(!isTransitioningColor) {
+            isTransitioningColor = true;
+            processColorTransition();
+        }
+    }
 
     // Update Nav Active States
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -750,7 +828,8 @@ function updateTheme(section) {
             item.classList.add('active', 'text-white');
             item.classList.remove('text-gray-500');
             if (chevron) chevron.classList.remove('hidden');
-            if (icon) icon.style.color = themeColor; 
+            // Allow CSS var to handle color transition naturally via stylesheet
+            if (icon) icon.style.color = ''; 
         } else {
             item.classList.remove('active', 'text-white');
             item.classList.add('text-gray-500');
@@ -759,7 +838,6 @@ function updateTheme(section) {
         }
     });
 
-    updateDynamicColors();
     updateFilterStyles();
 }
 
