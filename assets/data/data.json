@@ -1,0 +1,216 @@
+{
+    "siteConfig": {
+        "versions": {
+            "css": "2.2.7",
+            "js": "2.2.7",
+            "data": "2.2.7"
+        },
+        "personal": {
+            "name": "Kenan EGE",
+            "nickname": "Kaegean",
+            "avatar": "./assets/images/avatar4.gif",
+            "titles": [
+                "💾 Computer Engineer",
+                "🎮 Game Developer",
+                "🎸 Amateur Musician"
+            ],
+            "birthday": "1999-12-07",
+            "birthdayDisplay": "December 7, 1999",
+            "location": "Warsaw, PL",
+            "about": {
+                "greeting": "Hey, I'm Kenan 💾",
+                "description": "I'm a <strong>computer engineer</strong> and <strong>game developer</strong> currently based in <strong>Warsaw</strong>. I have a passion for building strange worlds and the sturdy code that supports them. Whether it's a reliable <strong>backend system</strong> or a game mechanic that lets you play as a destructive cat, I love the process of creation.<br><br>On the tech side, I build functional platforms like <strong>GamerLog</strong> (Django) and creative tools like <strong>Bitmapify</strong>. I even combined my love for sports and code to build an <strong>AI-powered NBA match predictor</strong>.<br><br>Creatively, I live in <strong>Unity</strong> and <strong>Unreal Engine</strong>. I've explored narrative horror in <strong>Echoes of Stella</strong>, arcade survival in <strong>Swarmbreaker</strong>, and pure chaos in <strong>In A Bad Mewd</strong>. I also collaborated on the high-speed sports game <strong>Killwats League</strong>.<br><br>With a degree in <strong>Computer Engineering</strong>, I'm now diving deeper into the industry through <strong>Game Programming at Futuregames</strong>. When I'm not debugging, you'll find me making music or jumping into random creative side quests."
+            }
+        },
+        "external": {
+            "steamUsername": "ZoneBee",
+            "spotifyArtistId": "2CMjhwFMDeusyTCoKcTNL8",
+            "githubUsername": "KenanAegean"
+        },
+        "cv": {
+            "default": "/assets/pdf/KenanEGE_CV_PL.pdf",
+            "turkey": "/assets/pdf/KenanEGE_CV_TR.pdf"
+        }
+    },
+    "themes": {
+        "about": { "hex": "#00f3ff" },
+        "games": { "hex": "#ff0055" },
+        "portfolio": { "hex": "#bc13fe" },
+        "experience": { "hex": "#ffd700" },
+        "education": { "hex": "#0051ff" },
+        "more": { "hex": "#39ff14" }
+    },
+    "socialLinks": [
+        { "id": 1, "platform": "GitHub", "icon": "github", "url": "https://github.com/KenanAegean", "visible": true },
+        { "id": 2, "platform": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/in/kenanege/", "visible": true },
+        { "id": 3, "platform": "Instagram", "icon": "instagram", "url": "https://www.instagram.com/kenanege/", "visible": true },
+        { "id": 4, "platform": "YouTube", "icon": "youtube", "url": "https://www.youtube.com/channel/UCds6Gb5gvdc6_zyXa8u5e0w", "visible": true },
+        { "id": 5, "platform": "Itch.io", "icon": "gamepad-2", "url": "https://kenanege.itch.io/", "visible": true }
+    ],
+    "portfolioItems": [
+        { "id": 1, "title": "Echolocation Mechanic Detailed Showcase", "category": "game development", "description": "UE5 visual echolocation system with custom shader effects for navigation.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/echo.gif", "link": "https://github.com/KenanAegean/Echolocation-System", "tags": ["UE 5", "Gameplay Mechanic"], "iconType": "unreal", "opennewtab": true, "visible": true },
+        { "id": 3, "title": "Echoes Of Stella", "category": "game development", "description": "Narrative horror game exploring isolation and memory through echolocation mechanics.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/eos.gif", "link": "https://kenanege.itch.io/echoes-of-stella", "tags": ["UE 5", "Group Project"], "iconType": "unreal", "opennewtab": true, "visible": true },
+        { "id": 2, "title": "Killwats League", "category": "game development", "description": "Fast-paced 1v1 sports game with dynamic cameras and arcade ball physics.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/kw.gif", "link": "https://kenanege.itch.io/killwats-league", "tags": ["UE 5", "Group Project"], "iconType": "unreal", "opennewtab": true, "visible": true },
+        { "id": 4, "title": "Dark Descent", "category": "game development", "description": "Action-roguelite with spell-based combat, minibosses, and procedural generation.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/dd.gif", "link": "https://kenanege.itch.io/dark-descent", "tags": ["Unity", "Group Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 5, "title": "In A Bad Mewd", "category": "game development", "description": "Chaotic destruction platformer where you play as a mischievous cat.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/mewd.gif", "link": "https://kenanege.itch.io/in-a-bad-mewd-webgltest", "tags": ["Unity", "Group Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 7, "title": "Swarmbreaker: Orbit of Power", "category": "game development", "description": "Arcade survivor game with orbital combat and endless enemy waves.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/sboop2.gif", "link": "https://kenanege.itch.io/swarmbreaker", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 8, "title": "No Need For Speed", "category": "game development", "description": "Low-poly racing game to test Unity's local multiplayer features.", "highlighted": false, "image": "./assets/images/Portfolio/gifs/nnfs.gif", "link": "https://github.com/KenanAegean/No-Need-For-Speed", "tags": ["Unity", "Solo Project"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 9, "title": "Riziko - IN DEVELOPMENT", "category": "game development", "description": "Digital board/card game adaptation with roguelike mechanics.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/riziko.gif", "link": "https://kenanaegean.github.io/Riziko_WebGL/", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 10, "title": "Snake: C++ Edition", "category": "game development", "description": "Classic Snake game built from scratch using pure C++.", "highlighted": false, "image": "./assets/images/Portfolio/gifs/sccp.gif", "link": "https://github.com/KenanAegean/Snake-Game-Cpp", "tags": ["C++", "Solo Project"], "iconType": "cpp", "opennewtab": true, "visible": true },
+        { "id": 11, "title": "Snake: Unreal Engine 5 Edition", "category": "game development", "description": "3D Snake game showcasing UE5 Blueprint and C++ integration.", "highlighted": false, "image": "./assets/images/Portfolio/gifs/sue.gif", "link": "https://github.com/KenanAegean/Snake-Game-UnrealEngine", "tags": ["UE 5", "Solo Project"], "iconType": "unreal", "opennewtab": true, "visible": true },
+        { "id": 12, "title": "Ai Pathfinding Project", "category": "game development", "description": "Grid-based pathfinding demonstration using A* algorithm implementation.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/pathFind.gif", "link": "https://github.com/KenanAegean/Ai-PathFinding-Project", "tags": ["Unity", "Solo Project", "Test On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 13, "title": "Way Escape", "category": "game development", "description": "2D platformer with precision jumping and puzzle mechanics.", "highlighted": false, "image": "./assets/images/Portfolio/gifs/waye.gif", "link": "https://github.com/KenanAegean/WayEscape-2D-Unity-Game-Demo", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 14, "title": "CRT TV Shader Project", "category": "game development", "description": "Custom shader recreating authentic retro CRT monitor visual effects.", "highlighted": true, "image": "./assets/images/Portfolio/gifs/shader1.gif", "link": "https://github.com/KenanAegean/FG-Shader", "tags": ["Unity", "Solo Project"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 15, "title": "Legacy Runner", "category": "game development", "description": "Mobile endless runner with procedural obstacle generation and power-ups.", "highlighted": false, "image": "./assets/images/Portfolio/gifs/lr.gif", "link": "https://kenanege.itch.io/legacy-runner", "tags": ["Unity", "Group Project"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 16, "title": "PixLock", "category": "game development", "description": "Hybrid Arkanoid-Pong game with pixel art aesthetics.", "highlighted": false, "image": "./assets/images/Portfolio/pixlock.png", "link": "https://github.com/KenanAegean/PixLock-2D-unity-game", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 17, "title": "Guardians Of The Garden", "category": "game development", "description": "Tower defense game where you protect gardens from pest invasions.", "highlighted": false, "image": "./assets/images/Portfolio/gog.png", "link": "https://github.com/KenanAegean/Guardians-Of-The-Garden", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 18, "title": "IEEE Computer Society Space Wars", "category": "game development", "description": "Space shooter arcade game created for IEEE student event.", "highlighted": false, "image": "./assets/images/Portfolio/ieee.png", "link": "https://github.com/KenanAegean/Unity-2D-IEEE-CS-Space-Wars-Game-Project", "tags": ["Unity", "Solo Project", "Play On Browser!"], "iconType": "unity", "opennewtab": true, "visible": true },
+        { "id": 21, "title": "GamerLog – Graduation Project", "category": "web application", "description": "Django platform for tracking game collections with AI-powered recommendations.", "highlighted": true, "image": "./assets/images/Portfolio/gamerlog.png", "link": "./projects/project-detail.html?id=gamerlog", "tags": ["Django"], "iconType": "django", "opennewtab": false, "visible": true },
+        { "id": 22, "title": "A.I.S.T. - Orion Innovation Hackathon", "category": "web application", "description": "Machine learning model predicting NBA match outcomes with Django integration.", "highlighted": false, "image": "./assets/images/Portfolio/aist.png", "link": "https://github.com/KenanAegean/AIST-Hackathon", "tags": ["Django"], "iconType": "django", "opennewtab": true, "visible": true },
+        { "id": 23, "title": "Personal Website", "category": "web application", "description": "JSON-driven portfolio site with automated GitHub Actions deployment pipeline.", "highlighted": true, "image": "./assets/images/Portfolio/website.png", "link": "https://github.com/KenanAegean/KenanAegean.github.io", "tags": ["Github Actions, HTML, CSS, JS"], "iconType": "web", "opennewtab": true, "visible": true },
+        { "id": 24, "title": "MTG - Deck Helper", "category": "web application", "description": "Web tool calculating draw probabilities and simulating Magic: The Gathering hands.", "highlighted": false, "image": "./assets/images/Portfolio/mtg.png", "link": "https://github.com/KenanAegean/MTG-Deck-Helper", "tags": ["HTML, CSS, JS"], "iconType": "web", "opennewtab": true, "visible": true },
+        { "id": 25, "title": "Bitmapify - Image Dithering", "category": "web application", "description": "Browser tool applying retro dithering effects to images in real-time.", "highlighted": false, "image": "./assets/images/Portfolio/bitmapify.png", "link": "https://github.com/KenanAegean/Bitmapify-Image-Dithering", "tags": ["HTML, CSS, JS"], "iconType": "web", "opennewtab": true, "visible": true },
+        { "id": 26, "title": "Score/GPA Calculator", "category": "web application", "description": "Web-based calculator for academic grade and GPA calculations.", "highlighted": false, "image": "./assets/images/Portfolio/score.png", "link": "https://github.com/KenanAegean/Average-Score-Calculator-PHP", "tags": ["PHP, HTML, CSS"], "iconType": "web", "opennewtab": true, "visible": true },
+        { "id": 27, "title": "Steam Screenshot Tool", "category": "windows application", "description": "Python automation for organizing and backing up Steam screenshots.", "highlighted": false, "image": "./assets/images/Portfolio/steam.png", "link": "https://github.com/KenanAegean/Steam-Screenshot-Tool", "tags": ["Python"], "iconType": "python", "opennewtab": true, "visible": true },
+        { "id": 28, "title": "Pixel Art Generator", "category": "windows application", "description": "Desktop tool converting images into pixel art using custom algorithms.", "highlighted": false, "image": "./assets/images/Portfolio/pixelart.png", "link": "https://github.com/KenanAegean/PixelArt-Maker", "tags": ["Python"], "iconType": "python", "opennewtab": true, "visible": true },
+        { "id": 29, "title": "Note Editor", "category": "windows application", "description": "Lightweight text editor built with Windows Forms in C#.", "highlighted": false, "image": "./assets/images/Portfolio/note.png", "link": "https://github.com/KenanAegean/Note-Editor-WindowsForm", "tags": ["C#"], "iconType": "csharp", "opennewtab": true, "visible": true },
+        { "id": 30, "title": "Scientific Calculator", "category": "windows application", "description": "Functional scientific calculator desktop application in C#.", "highlighted": false, "image": "./assets/images/Portfolio/calc.png", "link": "https://github.com/KenanAegean/Calculator-WindowsForm", "tags": ["C#"], "iconType": "csharp", "opennewtab": true, "visible": true },
+        { "id": 31, "title": "Graphic Designs", "category": "other projects", "description": "Logo designs, event posters, and UI mockups for various projects.", "highlighted": false, "image": "./assets/images/Portfolio/design.png", "link": "https://github.com/KenanAegean/graphic-design-projects", "tags": [], "iconType": "design", "opennewtab": true, "visible": true },
+        { "id": 32, "title": "Musics", "category": "other projects", "description": "Original music tracks and compositions available on Spotify.", "highlighted": false, "image": "./assets/images/Portfolio/musics.png", "link": "https://open.spotify.com/intl-tr/artist/2CMjhwFMDeusyTCoKcTNL8", "tags": [], "iconType": "music", "opennewtab": true, "visible": true },
+        { "id": 33, "title": "Euro 2022 Stadiums", "category": "mobile application", "description": "Android app with stadium guides and locations for Euro 2022.", "highlighted": false, "image": "./assets/images/Portfolio/stadium.png", "link": "https://github.com/KenanAegean/World-Cup-2022-Stadiums-App-Android-Studio", "tags": ["Android Studio"], "iconType": "android", "opennewtab": true, "visible": true },
+        { "id": 34, "title": "Football League Scores", "category": "mobile application", "description": "Mobile app tracking live football scores with local database.", "highlighted": false, "image": "./assets/images/Portfolio/league.png", "link": "https://github.com/KenanAegean/Auto-Score-App-Androd-Studio", "tags": ["Android Studio"], "iconType": "android", "opennewtab": true, "visible": true }
+    ],
+    "experience": [
+        {
+            "id": 1,
+            "company": "Orion Innovation",
+            "logo": "./assets/images/logos/orion.png",
+            "url": "https://www.orioninc.com/",
+            "positions": [
+                {
+                    "title": "Software Engineer",
+                    "startDate": "March 2023",
+                    "endDate": "September 2024",
+                    "responsibilities": [
+                        "<strong>Identified and resolved critical bugs</strong> in <strong>Java-based applications</strong>, improving system stability and performance.",
+                        "<strong>Conducted thorough testing and debugging</strong>, ensuring smooth functionality and minimizing downtime.",
+                        "<strong>Designed and deployed Docker containers</strong>, optimizing development and production environments for seamless CI/CD workflows.",
+                        "<strong>Managed and resolved Jira tasks</strong>, collaborating with cross-functional teams to meet project deadlines efficiently.",
+                        "<strong>Implemented DevOps solutions</strong>, automating deployment pipelines and enhancing system reliability through CI/CD integration.",
+                        "<strong>Developed an AI-based NBA match prediction app</strong> during the company hackathon using Django, Python, and machine learning."
+                    ]
+                },
+                {
+                    "title": "Software Engineer - Intern",
+                    "startDate": "August 2022",
+                    "endDate": "October 2022",
+                    "responsibilities": [
+                        "<strong>Contributed to the Traffic Test Team</strong>, analyzing performance and identifying potential bottlenecks.",
+                        "<strong>Developed a web application using Java Spring Boot</strong>, enabling employees to reserve test-working environments.",
+                        "<strong>Collaborated with senior developers</strong>, gaining hands-on experience in Agile methodologies and full-stack development."
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "company": "BDH - NETAŞ",
+            "logo": "./assets/images/logos/bdh.png",
+            "url": "https://www.bdh.com.tr/",
+            "positions": [
+                {
+                    "title": "Software Engineer - Intern",
+                    "startDate": "August 2021",
+                    "endDate": "September 2021",
+                    "responsibilities": [
+                        "<strong>Explored and learned the Salesforce Cloud Platform</strong>, understanding its CRM capabilities and integration with enterprise systems.",
+                        "<strong>Achieved foundational knowledge of Salesforce Administration and Development</strong>, including configuring objects, fields, automation rules, and basic Apex programming.",
+                        "<strong>Assisted in cloud-based application development</strong>, exploring customization, data management, and deployment within the Salesforce ecosystem.",
+                        "<strong>Participated in team meetings and knowledge-sharing sessions</strong>, deepening understanding of cloud infrastructure and CRM solutions."
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "company": "Biltek Design and Software A.Ş.",
+            "logo": "./assets/images/logos/biltek.png",
+            "url": "https://www.biltek.com.tr/",
+            "positions": [
+                {
+                    "title": "Volunteer Intern",
+                    "startDate": "September 2018",
+                    "endDate": "November 2019",
+                    "responsibilities": [
+                        "<strong>Gained insight into the internal operations of a software company</strong>, observing workflows, project management, and client interactions.",
+                        "<strong>Learned and practiced web development</strong>, building responsive websites using HTML, CSS, and PHP.",
+                        "<strong>Developed authentication features for a web application</strong>, implementing sign-in, sign-out, and user session management using PHP and MySQL.",
+                        "<strong>Assisted in front-end and back-end development</strong>, gaining hands-on experience in creating dynamic web pages and database interactions.",
+                        "<strong>Explored software development best practices</strong>, including debugging, version control, and UI/UX principles."
+                    ]
+                }
+            ]
+        }
+    ],
+    "education": [
+        {
+            "id": 1,
+            "institution": "Futuregames Academy",
+            "logo": "./assets/images/logos/futuregames.png",
+            "url": "https://futuregames.se/",
+            "degrees": [
+                { "title": "Game Programming", "startDate": "2024 September", "endDate": "Present", "description": "" }
+            ]
+        },
+        {
+            "id": 2,
+            "institution": "University Of Lodz",
+            "logo": "./assets/images/logos/lodz.png",
+            "url": "https://www.uni.lodz.pl/en/",
+            "degrees": [
+                { "title": "Faculty of Mathematics and Computer Science (Erasmus)", "startDate": "2022 February", "endDate": "2022 July", "description": "" }
+            ]
+        },
+        {
+            "id": 3,
+            "institution": "Doğuş University",
+            "logo": "./assets/images/logos/dogus.png",
+            "url": "https://www.dogus.edu.tr/en/",
+            "degrees": [
+                { "title": "Computer Engineering - Major", "startDate": "2018 September", "endDate": "2023 July", "description": "" },
+                { "title": "Software Engineering - Minor", "startDate": "2019 September", "endDate": "2023 July", "description": "" }
+            ]
+        }
+    ],
+    "gamesShowcase": {
+        "highlighted": [
+            { "id": 1, "title": "Swarmbreaker: Orbit of Power", "image": "./assets/images/PlayableGames/playable_swoop.png", "link": "https://kenanege.itch.io/swarmbreaker", "visible": true },
+            { "id": 2, "title": "Killwats League", "image": "./assets/images/PlayableGames/playable_kw.png", "link": "https://kenanege.itch.io/killwats-league", "visible": true },
+            { "id": 3, "title": "Echoes Of Stella", "image": "./assets/images/PlayableGames/playable_eos4.png", "link": "https://kenanege.itch.io/echoes-of-stella", "visible": true },
+            { "id": 4, "title": "Dark Descent", "image": "./assets/images/PlayableGames/playable_ddph2.png", "link": "https://kenanege.itch.io/dark-descent", "visible": true },
+            { "id": 5, "title": "In A Bad Mewd", "image": "./assets/images/PlayableGames/playable_mewd.png", "link": "https://kenanege.itch.io/in-a-bad-mewd-webgltest", "visible": true },
+            { "id": 6, "title": "Way Escape", "image": "./assets/images/PlayableGames/playable_wayescape.png", "link": "https://kenanaegean.github.io/WayEscape-2D-Unity-Game-Demo/", "visible": true },
+            { "id": 7, "title": "No Need For Speed", "image": "./assets/images/PlayableGames/playable_nnfs.png", "link": "https://github.com/KenanAegean/No-Need-For-Speed", "visible": true }
+        ],
+        "inDevelopment": [
+            { "id": 1, "title": "Riziko", "image": "./assets/images/PlayableGames/playable_riziko.png", "link": "https://kenanaegean.github.io/Riziko_WebGL/", "visible": true }
+        ]
+    },
+    "footer": {
+        "enabled": true,
+        "profile": { "enabled": true, "title": "Kenan EGE", "subtitle": "Computer Engineer & Game Developer", "location": "Warsaw, PL", "showTitle": true, "showSubtitle": true, "showLocation": true },
+        "copyright": { "enabled": true, "showYear": true, "name": "Kenan EGE", "text": "All rights reserved." },
+        "credits": { "enabled": true, "text": "Built with bunch of 0's and 1's" }
+    },
+    "instagram": {
+        "username": "kenanege",
+        "profileUrl": "https://instagram.com/kenanege",
+        "profileImage": "assets/images/insta/profile.jpg",
+        "posts": [
+            { "id": 1, "image": "assets/images/insta/p1.png", "alt": "Post 1", "link": "https://instagram.com/kenanege" },
+            { "id": 2, "image": "assets/images/insta/p2.png", "alt": "Post 2", "link": "https://instagram.com/kenanege" },
+            { "id": 3, "image": "assets/images/insta/p3.png", "alt": "Post 3", "link": "https://instagram.com/kenanege" },
+            { "id": 4, "image": "assets/images/insta/p4.png", "alt": "Post 4", "link": "https://instagram.com/kenanege" }
+        ]
+    }
+}

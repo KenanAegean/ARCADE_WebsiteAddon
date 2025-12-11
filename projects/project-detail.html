@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Detail - Kenan EGE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Chakra+Petch:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body class="min-h-screen text-white bg-[#0a0a0a]">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <!-- Back Button -->
+        <a href="../index.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            <span class="font-mono text-sm uppercase tracking-wider">Back to Portfolio</span>
+        </a>
+        
+        <!-- Project Header -->
+        <div id="project-header" class="mb-12">
+            <img id="project-logo" src="" alt="" class="w-24 h-24 rounded-2xl mb-6 bg-white/10 object-contain">
+            <h1 id="project-title" class="text-4xl md:text-6xl font-black text-white font-archivo mb-4"></h1>
+        </div>
+        
+        <!-- Project Content -->
+        <div id="project-content" class="prose prose-invert max-w-none">
+            <!-- Content will be loaded dynamically -->
+        </div>
+        
+        <!-- Screenshots Gallery -->
+        <div id="project-screenshots" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Screenshots will be loaded dynamically -->
+        </div>
+    </div>
+    
+    <script>
+        // Get project ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get('id');
+        
+        // Load project data
+        async function loadProject() {
+            try {
+                const response = await fetch('../assets/data/data.json');
+                const data = await response.json();
+                
+                if (data.projectDetails && data.projectDetails[projectId]) {
+                    const project = data.projectDetails[projectId];
+                    
+                    document.getElementById('project-title').textContent = project.title;
+                    document.getElementById('project-logo').src = project.logo;
+                    document.getElementById('project-logo').alt = project.logoAlt;
+                    document.title = project.title + ' - Kenan EGE';
+                    
+                    // Render sections
+                    const contentEl = document.getElementById('project-content');
+                    let contentHtml = '';
+                    
+                    project.sections.forEach(section => {
+                        if (section.type === 'text') {
+                            if (section.heading) {
+                                contentHtml += '<h2 class="text-2xl font-bold text-white mt-8 mb-4">' + section.heading + '</h2>';
+                            }
+                            contentHtml += section.content;
+                        } else if (section.type === 'list') {
+                            contentHtml += '<ul class="list-disc list-inside space-y-2 text-gray-300">';
+                            section.items.forEach(item => {
+                                contentHtml += '<li>' + item + '</li>';
+                            });
+                            contentHtml += '</ul>';
+                        } else if (section.type === 'screenshots') {
+                            const screenshotsEl = document.getElementById('project-screenshots');
+                            let screenshotsHtml = '';
+                            section.images.forEach(img => {
+                                screenshotsHtml += '<img src="' + img.src + '" alt="' + img.alt + '" class="rounded-xl w-full">';
+                            });
+                            screenshotsEl.innerHTML = screenshotsHtml;
+                        }
+                    });
+                    
+                    contentEl.innerHTML = contentHtml;
+                }
+            } catch (error) {
+                console.error('Error loading project:', error);
+            }
+        }
+        
+        loadProject();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
