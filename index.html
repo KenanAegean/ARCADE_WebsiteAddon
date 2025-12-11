@@ -25,10 +25,10 @@
     <div class="flex flex-col md:flex-row">
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-300 md:top-0 md:h-screen shrink-0 border-r border-white/5">
             <div class="h-full flex flex-col p-6 md:p-8 bg-[#0a001a]/80 backdrop-blur-xl border-r border-white/10 relative overflow-hidden">
-                <div id="sidebar-glow" class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--theme-color)] to-transparent"></div>
+                <div id="sidebar-glow" class="absolute top-0 left-0 w-full h-1" style="background: linear-gradient(to right, transparent, var(--theme-color), transparent);"></div>
                 
                 <div class="flex flex-col items-center text-center mb-12 relative z-10 mt-4">
-                    <div id="avatar-ring" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 p-1 mb-4 relative group cursor-pointer overflow-hidden bg-black transition-colors duration-700 shadow-[0_0_20px_rgba(0,0,0,0.5)]">
+                    <div id="avatar-ring" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-2 p-1 mb-4 relative group cursor-pointer overflow-hidden bg-black transition-colors duration-700" style="border-color: var(--theme-color); box-shadow: 0 0 20px var(--theme-color, #00f3ff);">
                         <img src="./assets/images/avatar4.gif" alt="Avatar" class="w-full h-full rounded-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="this.style.display='none'">
                         <div class="absolute inset-0 flex items-center justify-center text-2xl font-black opacity-0 group-hover:opacity-100 transition-opacity bg-black/80" style="color: var(--theme-color)">KE</div>
                     </div>
@@ -118,7 +118,7 @@
                     </p>
 
                     <div class="flex flex-wrap gap-4">
-                        <a href="#portfolio" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1">
+                        <a href="#portfolio" id="cta-primary" class="px-8 py-4 text-black font-black uppercase tracking-widest text-sm rounded transition-all duration-300 hover:scale-105 hover:-translate-y-1" style="background-color: var(--theme-color); box-shadow: 0 0 30px var(--theme-color);">
                             View Projects
                         </a>
                         <a href="#games" class="px-8 py-4 border-2 border-white/20 text-white font-bold uppercase tracking-widest text-sm rounded hover:bg-white/10 hover:border-white transition-colors backdrop-blur-sm">
@@ -129,7 +129,7 @@
 
                 <section id="games">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
-                        <h3 id="games-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
+                        <h3 id="games-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #ff0055; text-shadow: 0 0 10px #ff0055;">
                             <span class="w-8 h-[2px] bg-current opacity-70"></span>
                             Playable Demos
                         </h3>
@@ -144,7 +144,7 @@
                 <section id="portfolio">
                     <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
                         <div class="relative z-10 text-left section-backdrop">
-                            <h3 id="portfolio-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
+                            <h3 id="portfolio-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #bc13fe; text-shadow: 0 0 10px #bc13fe;">
                                 <span class="w-8 h-[2px] bg-current opacity-70"></span>
                                 Projects
                             </h3>
@@ -154,7 +154,7 @@
                         </div>
                         
                         <div id="filters" class="flex flex-wrap gap-2">
-                            <button class="filter-btn active px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm" data-filter="all">All</button>
+                            <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm" data-filter="all">All</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="game">Games</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="web">Web</button>
                             <button class="filter-btn px-4 py-2 text-[10px] font-bold uppercase tracking-wider border rounded transition-all duration-300 backdrop-blur-sm bg-transparent border-white/20 text-gray-400 hover:border-white hover:text-white" data-filter="app">Apps</button>
@@ -166,7 +166,7 @@
 
                 <section id="experience">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
-                        <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
+                        <h3 id="experience-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #ffd700; text-shadow: 0 0 10px #ffd700;">
                             <span class="w-8 h-[2px] bg-current opacity-70"></span>
                             History
                         </h3>
@@ -180,7 +180,7 @@
                  
                 <section id="education" class="pb-32">
                     <div class="mb-12 relative z-10 text-left section-backdrop">
-                        <h3 id="education-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start transition-colors duration-700 text-readable">
+                        <h3 id="education-subtitle" class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase mb-2 font-bold flex items-center gap-2 justify-start text-readable" style="color: #0051ff; text-shadow: 0 0 10px #0051ff;">
                             <span class="w-8 h-[2px] bg-current opacity-70"></span>
                             Education
                         </h3>

@@ -1,3 +1,7 @@
+:root {
+    --theme-color: #00f3ff; /* Default theme color - cyan for about section */
+}
+
 html, body {
     width: 100%;
     max-width: 100%;
@@ -68,6 +72,17 @@ body {
 
 .exp-card:hover { background: rgba(255,255,255,0.05); }
 .exp-card:hover .exp-title { color: var(--theme-color); }
+
+/* Filter button default styles */
+.filter-btn {
+    background-color: transparent;
+    border-color: rgba(255,255,255,0.2);
+    color: #9ca3af;
+}
+.filter-btn:hover {
+    border-color: white;
+    color: white;
+}
 
 /* Text readability improvements */
 .text-readable {

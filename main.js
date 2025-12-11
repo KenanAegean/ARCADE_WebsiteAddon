@@ -454,7 +454,7 @@ function initBackground() {
 
 // ==================== THEME UPDATE ====================
 function updateTheme(section) {
-    // Always update, even if same section (fixes color issues)
+    // Update theme when section changes (called from handleScroll only when needed)
     currentSection = section;
     themeColor = themes[section] ? themes[section].hex : themes.about.hex;
     document.documentElement.style.setProperty('--theme-color', themeColor);
@@ -462,21 +462,18 @@ function updateTheme(section) {
     // Update nav items
     document.querySelectorAll('.nav-item').forEach(function(item) {
         const isActive = item.dataset.section === section;
+        const chevron = item.querySelector('.nav-chevron');
         if (isActive) {
             item.classList.add('active', 'text-white');
             item.classList.remove('text-gray-500');
+            if (chevron) chevron.classList.remove('hidden');
         } else {
             item.classList.remove('active', 'text-white');
             item.classList.add('text-gray-500');
+            if (chevron) chevron.classList.add('hidden');
         }
     });
 
-    // Update sidebar elements
-    const avatarRing = document.getElementById('avatar-ring');
-    if (avatarRing) {
-        avatarRing.style.borderColor = themeColor;
-        avatarRing.style.boxShadow = '0 0 20px ' + themeColor + '40';
-    }
     
     const statusBadge = document.getElementById('status-badge');
     if (statusBadge) {
@@ -491,21 +488,12 @@ function updateTheme(section) {
         heroAccent.style.textShadow = '0 0 30px ' + themeColor + ', 0 0 60px ' + themeColor;
     }
     
-    // Update CTA button
-    const ctaPrimary = document.getElementById('cta-primary');
-    if (ctaPrimary) {
-        ctaPrimary.style.backgroundColor = themeColor;
-        ctaPrimary.style.boxShadow = '0 0 30px ' + themeColor + '60';
-    }
 
-    // Update section subtitles
-    ['games', 'portfolio', 'experience', 'education'].forEach(function(s) {
-        const el = document.getElementById(s + '-subtitle');
-        if (el) {
-            el.style.color = themeColor;
-            el.style.textShadow = '0 0 10px ' + themeColor;
-        }
-    });
+    // FIXED: Removed dynamic subtitle color updates (previously lines 501-508)
+    // Section subtitles now have hardcoded colors in HTML to prevent
+    // synchronization issues during fast scrolling. Each section's subtitle
+    // stays its own color instead of changing with the global theme.
+
 
     // Update status badge ping animation colors
     const pingElements = document.querySelectorAll('#status-badge .animate-ping');
@@ -527,44 +515,42 @@ function updateTheme(section) {
 
 // ==================== UPDATE DYNAMIC COLORS ====================
 function updateDynamicColors() {
-    // Update all elements that use inline style with theme color
-    document.querySelectorAll('[style*="var(--theme-color)"]').forEach(function(el) {
-        // Force style recalculation
-        el.style.setProperty('--theme-color', themeColor);
-    });
-    
-    // Update game cards "Click to Play" text
-    document.querySelectorAll('.game-card .font-mono').forEach(function(el) {
-        el.style.color = themeColor;
-        el.style.textShadow = '0 0 10px ' + themeColor;
-    });
-    
-    // Update portfolio card category colors
-    document.querySelectorAll('.project-card .flex.items-center.justify-between').forEach(function(el) {
-        el.style.color = themeColor;
-    });
-    
-    // Update education card icons
-    document.querySelectorAll('.edu-icon').forEach(function(el) {
-        el.style.color = themeColor;
-    });
-    
-    // Update experience timeline dots
-    document.querySelectorAll('#experience-list .absolute.border-2').forEach(function(el) {
-        el.style.borderColor = themeColor;
-        el.style.backgroundColor = themeColor;
-        el.style.boxShadow = '0 0 10px ' + themeColor;
-    });
-    
-    // Update experience company links
-    document.querySelectorAll('#experience-list a[target="_blank"]').forEach(function(el) {
-        el.style.color = themeColor;
+    // Update active nav item icon color (Lucide SVGs need explicit updates)
+    document.querySelectorAll('.nav-item').forEach(function(item) {
+        const icon = item.querySelector('.nav-icon');
+        if (icon) {
+            if (item.classList.contains('active')) {
+                icon.style.color = themeColor;
+            } else {
+                icon.style.color = ''; // Reset to inherit from CSS
+            }
+        }
     });
     
     // Update map pin icon color in sidebar
-    const mapPinIcon = document.querySelector('.nav-icon[data-lucide="map-pin"]');
+    const mapPinIcon = document.querySelector('[data-lucide="map-pin"]');
     if (mapPinIcon) {
         mapPinIcon.style.color = themeColor;
+    }
+    
+    // Update avatar ring with proper box-shadow (opacity via hex alpha)
+    const avatarRing = document.getElementById('avatar-ring');
+    if (avatarRing) {
+        avatarRing.style.borderColor = themeColor;
+        avatarRing.style.boxShadow = '0 0 20px ' + themeColor + '40'; // 25% opacity
+    }
+    
+    // Update CTA primary button box-shadow
+    const ctaPrimary = document.getElementById('cta-primary');
+    if (ctaPrimary) {
+        ctaPrimary.style.backgroundColor = themeColor;
+        ctaPrimary.style.boxShadow = '0 0 30px ' + themeColor + '66'; // 40% opacity
+    }
+    
+    // Update sidebar glow gradient
+    const sidebarGlow = document.getElementById('sidebar-glow');
+    if (sidebarGlow) {
+        sidebarGlow.style.background = 'linear-gradient(to right, transparent, ' + themeColor + ', transparent)';
     }
 }
 
@@ -581,7 +567,7 @@ function renderGames() {
             '<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-90"></div>' +
             '<div class="absolute bottom-0 left-0 p-6 z-10">' +
                 '<h3 class="text-2xl md:text-4xl font-black uppercase italic text-white mb-2 drop-shadow-lg">' + game.title + '</h3>' +
-                '<div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: ' + themeColor + '; text-shadow: 0 0 10px ' + themeColor + '">' +
+                '<div class="flex items-center gap-2 font-mono text-sm uppercase tracking-widest transition-colors duration-300" style="color: var(--theme-color); text-shadow: 0 0 10px var(--theme-color)">' +
                     '<i data-lucide="gamepad-2" class="w-4 h-4"></i> Click to Play' +
                 '</div>' +
             '</div>' +
@@ -608,7 +594,7 @@ function renderPortfolio(filter) {
             '<div class="card-border absolute inset-0 border border-transparent transition-colors duration-300 pointer-events-none rounded-lg z-20"></div>' +
             '<div class="aspect-video w-full bg-[#080808] relative overflow-hidden border-b border-white/5">' +
                 '<img src="' + item.image + '" alt="' + item.title + '" class="card-image w-full h-full object-cover transition-transform duration-700 opacity-80" onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\'">' +
-                '<div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: ' + themeColor + '">' +
+                '<div class="w-full h-full items-center justify-center bg-[#0a0a0a] relative hidden" style="color: var(--theme-color)">' +
                     '<i data-lucide="gamepad-2" class="w-10 h-10 opacity-50 relative z-10 animate-pulse"></i>' +
                 '</div>' +
                 '<div class="absolute top-2 right-2 flex flex-col items-end gap-1">' +
@@ -618,7 +604,7 @@ function renderPortfolio(filter) {
             '<div class="p-5 flex-grow flex flex-col relative z-10">' +
                 '<h4 class="card-title text-lg font-bold text-white mb-2 leading-tight transition-colors">' + item.title + '</h4>' +
                 '<p class="text-gray-400 text-xs mb-4 line-clamp-2 flex-grow font-mono leading-relaxed group-hover:text-gray-300">' + item.description + '</p>' +
-                '<div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 font-bold text-[10px] uppercase tracking-wider transition-colors duration-300" style="color: ' + themeColor + '">' +
+                '<div class="flex items-center justify-between mt-auto pt-4 border-t border-white/5 font-bold text-[10px] uppercase tracking-wider transition-colors duration-300" style="color: var(--theme-color)">' +
                     '<span class="flex items-center gap-2">' +
                         '<i data-lucide="' + iconName + '" class="w-3 h-3"></i>' +
                         item.category +
@@ -639,9 +625,9 @@ function renderExperience() {
     let html = '';
     experience.forEach(function(job) {
         html += '<div class="relative pl-8 group">' +
-            '<div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: ' + themeColor + '; background-color: ' + themeColor + '; box-shadow: 0 0 10px ' + themeColor + '"></div>' +
+            '<div class="absolute -left-[9px] top-2 w-4 h-4 bg-[#050505] border-2 rounded-full group-hover:scale-125 transition-all duration-300" style="border-color: var(--theme-color); background-color: var(--theme-color); box-shadow: 0 0 10px var(--theme-color)"></div>' +
             '<h3 class="text-3xl font-bold text-white mb-1">' + job.company + '</h3>' +
-            '<a href="' + job.url + '" target="_blank" class="text-xs font-mono hover:underline mb-6 block w-fit" style="color: ' + themeColor + '">Visit Company Website →</a>' +
+            '<a href="' + job.url + '" target="_blank" class="text-xs font-mono hover:underline mb-6 block w-fit" style="color: var(--theme-color)">Visit Company Website →</a>' +
             '<div class="space-y-6">';
         job.positions.forEach(function(pos) {
             html += '<div class="exp-card bg-black/40 p-8 rounded-xl border border-white/5 transition-all duration-300 relative overflow-hidden">' +
@@ -664,7 +650,7 @@ function renderEducation() {
     let html = '';
     education.forEach(function(edu) {
         html += '<div class="edu-card group p-8 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl transition-all duration-300">' +
-            '<div class="edu-icon mb-6 transition-colors duration-300 p-3 bg-white/5 w-fit rounded-lg" style="color: ' + themeColor + '">' +
+            '<div class="edu-icon mb-6 transition-colors duration-300 p-3 bg-white/5 w-fit rounded-lg" style="color: var(--theme-color)">' +
                 '<i data-lucide="graduation-cap" class="w-8 h-8"></i>' +
             '</div>' +
             '<div class="text-xs font-bold uppercase text-gray-500 mb-2">' + edu.date + '</div>' +
@@ -703,10 +689,11 @@ function handleScroll() {
             const offsetTop = el.offsetTop;
             const offsetHeight = el.offsetHeight;
             if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-                // FIXED: Removed the check "if (currentSection !== section)" 
-                // to allow the theme to refresh constantly and fix color glitches,
-                // matching the developer's intent in updateTheme comment.
-                updateTheme(section);
+                // FIXED: Re-added section change check to prevent redundant updates
+                // Only call updateTheme when actually changing sections, not on every scroll event
+                if (currentSection !== section) {
+                    updateTheme(section);
+                }
                 break;
             }
         }
@@ -714,7 +701,16 @@ function handleScroll() {
 }
 
 function initEventListeners() {
-    window.addEventListener('scroll', handleScroll);
+    // Throttle scroll event to prevent excessive calls during fast scrolling
+    let scrollThrottle;
+    window.addEventListener('scroll', function() {
+        if (!scrollThrottle) {
+            scrollThrottle = setTimeout(function() {
+                scrollThrottle = null;
+                handleScroll();
+            }, 16); // ~60fps
+        }
+    });
 
     document.querySelectorAll('.nav-item').forEach(function(item) {
         item.addEventListener('click', function(e) {
@@ -771,7 +767,11 @@ async function init() {
     // Initialize event listeners
     initEventListeners();
 
-    // FIXED: Trigger initial scroll check to set correct theme if page is loaded scrolled down
+    // Apply initial theme (force apply even if already on 'about' section)
+    // This ensures all theme colors are properly set on page load
+    updateTheme(currentSection);
+    
+    // Then check if we need to change based on scroll position
     handleScroll();
 }
 
