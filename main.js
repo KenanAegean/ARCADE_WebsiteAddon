@@ -9,9 +9,9 @@ let socialLinks = [];
 let footerConfig = null;
 let instagram = null;
 
-let currentSection = 'about';
-let currentFilter = 'all';
-let themeColor = '#00f3ff';
+let currentSection = 'portfolio';
+let currentFilter = 'highlighted';
+let themeColor = '#bc13fe';
 let dataLoaded = false;
 
 // ==================== DATA LOADING ====================
@@ -40,8 +40,8 @@ async function loadData() {
             education: { hex: '#0051ff' }
         };
         
-        // Initial theme default (will be overridden by init scroll check)
-        themeColor = themes.about.hex;
+        // Initial theme default - portfolio section
+        themeColor = themes.portfolio ? themes.portfolio.hex : '#bc13fe';
         dataLoaded = true;
         
         console.log('Data loaded successfully');
@@ -714,14 +714,22 @@ async function init() {
     lucide.createIcons();
     initBackground();
     renderGames();
-    renderPortfolio();
+    renderPortfolio('highlighted'); // Default to highlighted
     renderExperience();
     renderEducation();
     renderMore();
     setupCVLocalization();
     initEventListeners();
-    updateTheme(currentSection);
-    handleScroll();
+    updateTheme('portfolio'); // Default section
+    updateFilterStyles(); // Apply highlighted filter style
+    
+    // Scroll to portfolio section on load
+    setTimeout(function() {
+        const portfolioSection = document.getElementById('portfolio');
+        if (portfolioSection) {
+            portfolioSection.scrollIntoView({ behavior: 'auto' });
+        }
+    }, 100);
 }
 
 document.addEventListener('DOMContentLoaded', init);
