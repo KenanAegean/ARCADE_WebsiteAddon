@@ -361,7 +361,7 @@ function initBackground() {
         ctx.strokeStyle = themeColor;
         ctx.lineWidth = 1.5;
         ctx.shadowColor = themeColor;
-        ctx.shadowBlur = 10; // REDUCED GLOW from 15
+        ctx.shadowBlur = 10;
         ctx.globalAlpha = 0.55;
 
         shapes.forEach(function(shape) {
@@ -432,19 +432,35 @@ function renderNavigation() {
 
 function renderSidebarSocials() {
     const container = document.getElementById('sidebar-socials');
-    const links = (footerConfig && footerConfig.social && footerConfig.social.links) ? footerConfig.social.links : socialLinks;
+    // Changed to use socialLinks directly to ensure we use iconType definitions
+    const links = socialLinks; 
     
     if (!container || !links) return;
 
     let html = '';
     links.forEach(link => {
         if (link.visible === false) return;
+        
+        let iconElement = '';
+        if (link.iconType === 'ionicon') {
+            iconElement = `<ion-icon name="${link.icon}" class="w-5 h-5"></ion-icon>`;
+        } else if (link.iconType === 'fontawesome') {
+            // FIX: Use font-size and line-height for alignment instead of w/h
+            iconElement = `<i class="fa-brands ${link.icon} text-xl leading-none"></i>`;
+        } else {
+            // Default fallback to Lucide
+            iconElement = `<i data-lucide="${link.icon}" class="w-5 h-5"></i>`;
+        }
+
         html += `
-        <a href="${link.url}" target="_blank" class="p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="${link.platform}">
-            <i data-lucide="${link.icon}" class="w-5 h-5"></i>
+        <a href="${link.url}" target="_blank" class="flex items-center justify-center p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="${link.platform}">
+            ${iconElement}
         </a>`;
     });
     container.innerHTML = html;
+    
+    // Re-initialize Lucide icons in case any were added
+    if(window.lucide) lucide.createIcons();
 }
 
 // Variable to store the timeout ID
