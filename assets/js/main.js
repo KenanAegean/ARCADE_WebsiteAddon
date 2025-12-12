@@ -440,7 +440,7 @@ function renderSidebarSocials() {
     links.forEach(link => {
         if (link.visible === false) return;
         html += `
-        <a href="${link.url}" target="_blank" class="p-2 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="${link.platform}">
+        <a href="${link.url}" target="_blank" class="p-3 text-gray-500 hover:text-white hover:bg-white/10 rounded-full transition-all hover:scale-110" title="${link.platform}">
             <i data-lucide="${link.icon}" class="w-5 h-5"></i>
         </a>`;
     });
