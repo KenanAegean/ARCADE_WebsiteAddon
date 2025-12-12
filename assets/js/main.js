@@ -100,7 +100,7 @@ async function loadData() {
             portfolio: { hex: '#bc13fe' },
             experience: { hex: '#ffd700' },
             education: { hex: '#0051ff' },
-            more: { hex: '#39ff14' }
+            more: { hex: '#ff6600' }
         };
         themes = siteConfig?.themes || defaultThemes;
 
